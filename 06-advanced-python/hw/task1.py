@@ -3,7 +3,6 @@ E - dict(<V> : [<V>, <V>, ...])
 Ключ - строка, идентифицирующая вершину графа
 значение - список вершин, достижимых из данной
 
-
 Сделать так, чтобы по графу можно было итерироваться(обходом в ширину)
 
 """
@@ -22,9 +21,10 @@ class Graph:
     within the subjects connected component.
     """
 
-    def __init__(self, name, bfs_graph):
+    def __init__(self, bfs_graph, name):
         self.storage = deque(name)
-        self.bfs(name, bfs_graph)
+        self.graph = bfs_graph
+        # self.bfs(name, self.graph)
 
     def __iter__(self):
         return self
@@ -34,34 +34,34 @@ class Graph:
             raise StopIteration
         return self.storage.popleft()
 
-Сделать так, чтобы по графу можно было итерироваться(обходом в ширину)
-"""
+    # def bfs(self, name, bfs_graph):
+    #     search_deque = deque()
+    #     search_deque += bfs_graph[name]
+    #     while search_deque:
+    #         pop_element = search_deque.popleft()
+    #         if pop_element not in self.storage:
+    #             search_deque += bfs_graph[pop_element]
+    #             self.storage += pop_element
 
-
-    def bfs(self, name, bfs_graph):
+    def bfs(self, name):
         search_deque = deque()
-        search_deque += bfs_graph[name]
+        search_deque += self.graph[name]
         while search_deque:
             pop_element = search_deque.popleft()
             if pop_element not in self.storage:
-                search_deque += bfs_graph[pop_element]
+                search_deque += self.graph[pop_element]
                 self.storage += pop_element
 
 
-bfs_traversal = Graph("A", E)
+name = "A"
+bfs_traversal = Graph(bfs_graph=E, name=name)
+# bfs_graph = {'A': ['B', 'C', 'D'], 'B': ['C'], 'C': [], 'D': ['A']}
+bfs_traversal.bfs(name)
 for i in bfs_traversal:
     print(i)
 
 
 
 
-class Graph:
-    def __init__(self, E):
-        self.E = E
 
 
-E = {'A': ['B', 'C', 'D'], 'B': ['C'], 'C': [], 'D': ['A']}
-graph = Graph(E)
-
-for vertex in graph:
-    print(vertex)
