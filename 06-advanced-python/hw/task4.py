@@ -18,115 +18,85 @@ True
 import os.path
 
 
-# class PrintableFolder:
-#     def __init__(self, name, content):
-#         self.name = name
-#         self.content = content
-#
-#     def __str__(self):
-#         pass
-
-
-class PrintableFile:
-    def __init__(self):
-        pass
-
-    def __str__(self):
-        pass
-
-    def __contains__(self, item):
-        content = {}
-        curr_dir = os.getcwd()
-        for (dirpath, dirnames, filenames) in os.walk(curr_dir):
-            name_of_dir = os.path.basename(dirpath)
-            content.update({name_of_dir: filenames})
-
-        all_folders = list(content.values())
-        for curr_folder in range(len(all_folders)):
-            if item in all_folders[curr_folder]:
-                return True
-        return False
-
-"""!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"""
-###################################################
-
-
-# base_str = ''
-def print_dir(path, prefix=''):
-    base_str = ""
-    # global base_str
-    # print('{}├── {}'.format(prefix, os.path.basename(path)))
-    base_str = base_str + '{}├── {}'.format(prefix, os.path.basename(path)) + "\n"
-
-    for item in os.listdir(path):
-        p = os.path.join(path, item)
-        if os.path.isdir(p):
-            print_dir(p, prefix + '│  ')
-        else:
-            base_str = base_str + '{}│  ├── (file) {}\n'.format(prefix, item)
-    return base_str
-
-
-# print_dir(os.getcwd())
-# print(print_dir(os.getcwd()))
-
-
 class PrintableFolder:
-    def __init__(self, path, prefix, base_dir=None):
-        # self.name = name
-        # self.content = content
+    """ Display all subfolders and relatives files.
+
+    Class allowing to display all subfolders and
+    files relative to the current directory.
+    Additionally, it is possible to check if a file or folder
+    exists in one of the directories or subdirectories"""
+
+    def __init__(self, path, prefix):
         self.path = path
         self.prefix = prefix
         self.base_str = ''
-        self.index = 0
 
     def __str__(self):
         self.base_str = self.base_str + '{}├── {}'.format(self.prefix, os.path.basename(self.path))
         for item in os.listdir(self.path):
-            p = os.path.join(self.path, item)
-            if os.path.isdir(p):
-                print(PrintableFolder(p, self.prefix + '│ '))
+            new_path = os.path.join(self.path, item)
+            if os.path.isdir(new_path):
+                print(PrintableFolder(new_path, self.prefix + '│ '))
             else:
                 self.base_str = self.base_str + '\n{}│ ├── (file) {}'.format(self.prefix, item)
         return self.base_str
 
+    def __contains__(self, item):
+        self.dict = {os.path.basename(dirpath): filenames for dirpath, _, filenames in os.walk(os.getcwd())}
 
-# path = os.getcwd()
-# prefix = ''
-# test1 = PrintableFolder(path,prefix)
-# print(test1)
+        for _, v in self.dict.items():
+            if item in v:
+                return True
+            else:
+                return False
 
+
+path = os.getcwd()  # current work directory
+prefix = ''
+file = "task4.py"
+test1 = PrintableFolder(path, prefix)
+print(test1)
+print(file in test1)
 
 
 class PrintableFolder:
+    """ Display all subfolders and relatives files.
 
-    current_dir = os.getcwd()
+    Class allowing to display all subfolders and
+    files relative to the current directory.
+    Additionally, it is possible to check if a file or folder
+    exists in one of the directories or subdirectories"""
 
-    def __init__(self, path, prefix):
-        # self.name = name
-        # self.content = content
-        self.path = path
-        self.prefix = prefix
+    def __init__(self):
         self.base_str = ''
 
     def __str__(self):
-        self.print_dir(self.path, self.prefix)
         return self.base_str
 
     def print_dir(self, path, prefix):
         self.base_str = self.base_str + '{}├── {}'.format(prefix, os.path.basename(path)) + "\n"
+
         for item in os.listdir(path):
-            p = os.path.join(path, item)
-            if os.path.isdir(p):
-                self.print_dir(p, prefix + '│  ')
+            new_path = os.path.join(path, item)
+            if os.path.isdir(new_path):
+                self.print_dir(new_path, prefix + '│  ')
             else:
                 self.base_str = self.base_str + '{}│  ├── (file) {}\n'.format(prefix, item)
 
+    def __contains__(self, item):
+        self.dict = {os.path.basename(dirpath): filenames for dirpath, _, filenames in os.walk(os.getcwd())}
 
-path = os.getcwd()
+        for _, v in self.dict.items():
+            if item in v:
+                return True
+            else:
+                return False
+
+
+path = os.getcwd()  # current work directory
 prefix = ''
-test1 = PrintableFolder(path, prefix)
-print(test1)
-check_file = PrintableFile()
 file = "task4.py"
-print(file in check_file)
+test1 = PrintableFolder()
+test1.print_dir(path=path, prefix=prefix)
+print(test1)
+print(file in test1)

@@ -24,7 +24,6 @@ class Graph:
     def __init__(self, bfs_graph, name):
         self.storage = deque(name)
         self.graph = bfs_graph
-        # self.bfs(name, self.graph)
 
     def __iter__(self):
         return self
@@ -34,16 +33,7 @@ class Graph:
             raise StopIteration
         return self.storage.popleft()
 
-    # def bfs(self, name, bfs_graph):
-    #     search_deque = deque()
-    #     search_deque += bfs_graph[name]
-    #     while search_deque:
-    #         pop_element = search_deque.popleft()
-    #         if pop_element not in self.storage:
-    #             search_deque += bfs_graph[pop_element]
-    #             self.storage += pop_element
-
-    def bfs(self, name):
+    def bfs(self):
         search_deque = deque()
         search_deque += self.graph[name]
         while search_deque:
@@ -55,8 +45,7 @@ class Graph:
 
 name = "A"
 bfs_traversal = Graph(bfs_graph=E, name=name)
-# bfs_graph = {'A': ['B', 'C', 'D'], 'B': ['C'], 'C': [], 'D': ['A']}
-bfs_traversal.bfs(name)
+bfs_traversal.bfs()
 for i in bfs_traversal:
     print(i)
 
