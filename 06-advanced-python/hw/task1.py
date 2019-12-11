@@ -21,9 +21,8 @@ class Graph:
     within the subjects connected component.
     """
 
-    def __init__(self, bfs_graph, name):
-        self.storage = deque(name)
-        self.graph = bfs_graph
+    def __init__(self):
+        self.storage = deque()
 
     def __iter__(self):
         return self
@@ -33,19 +32,20 @@ class Graph:
             raise StopIteration
         return self.storage.popleft()
 
-    def bfs(self):
+    def bfs(self, bfs_graph, name):
+        self.storage += name
         search_deque = deque()
-        search_deque += self.graph[name]
+        search_deque += bfs_graph[name]
         while search_deque:
             pop_element = search_deque.popleft()
             if pop_element not in self.storage:
-                search_deque += self.graph[pop_element]
+                search_deque += bfs_graph[pop_element]
                 self.storage += pop_element
 
 
 name = "A"
-bfs_traversal = Graph(bfs_graph=E, name=name)
-bfs_traversal.bfs()
+bfs_traversal = Graph()
+bfs_traversal.bfs(bfs_graph=E, name=name)
 for i in bfs_traversal:
     print(i)
 

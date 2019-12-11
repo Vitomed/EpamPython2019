@@ -44,8 +44,8 @@ class PrintableFolder:
     def __contains__(self, item):
         self.dict = {os.path.basename(dirpath): filenames for dirpath, _, filenames in os.walk(os.getcwd())}
 
-        for _, v in self.dict.items():
-            if item in v:
+        for _, filenames in self.dict.items():
+            if item in filenames:
                 return True
             else:
                 return False
@@ -86,8 +86,8 @@ class PrintableFolder:
     def __contains__(self, item):
         self.dict = {os.path.basename(dirpath): filenames for dirpath, _, filenames in os.walk(os.getcwd())}
 
-        for _, v in self.dict.items():
-            if item in v:
+        for _, filenames in self.dict.items():
+            if item in filenames:
                 return True
             else:
                 return False
