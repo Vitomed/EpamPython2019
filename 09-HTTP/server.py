@@ -6,7 +6,7 @@ port = 6060
 clients = []
 
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s.bind(host, port)
+s.bind((host, port))
 
 quit = False
 print("Server started")
@@ -17,7 +17,7 @@ while not quit:
         if addr not in clients:
             clients.append(addr)
         itistime = time.strftime("%Y-%m-%d-%H.%M.%S", time.localtime())
-        print(f"[{addr[0]}]==[{addr[1]}==[{itistime}]/", end="")
+        print(f"[{addr[0]}]==[{addr[1]}==[{itistime}]", end="")
         print(data.decode("utf-8"))
         # Отправитель не должен получать свои сообщения. Делаем проверку.
         for client in clients:
