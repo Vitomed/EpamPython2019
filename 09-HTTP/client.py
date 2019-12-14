@@ -11,6 +11,7 @@ def receving(name, sock):
             while True:
                 data, addr = sock.recvfrom(1024)
                 print(data.decode("utf-8"))
+
                 # Симметричное шифрование сообщений. Расшифровка
                 # decrypt = ""
                 # k = False
@@ -24,6 +25,7 @@ def receving(name, sock):
                 #     else:
                 #         decrypt = chr(ord(i) ^ key)
                 # print("decrypt", decrypt)
+
                 # Пауза между отправками
                 time.sleep(0.2)
         except:
@@ -53,12 +55,13 @@ while not shutdown:
     else:
         try:
             message = input()
-            # Симметричное шифрование сообщений. Зашифровка
 
+            # Симметричное шифрование сообщений. Зашифровка
             # crypt = ""
             # for i in message:
             #     crypt += chr(ord(i) ^ key)
             # message = crypt
+
             if message != "":
                 s.sendto(f"[{alias}] :: {message}".encode("utf-8"), server)
             time.sleep(0.2)
