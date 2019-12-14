@@ -15,7 +15,7 @@ while True:
 		data=clientsocket.recv(512)
 		if data=='q' or data=='Q':
 			clientsocket.close()
-			print "Client quits:"
+			print ("Client quits:")
 			break
 		else:
 			print "Data received", data

@@ -3,7 +3,7 @@
 import socket
 
 host = ''
-port = 50000
+port = 666
 backlog = 1 
 size = 1024 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 

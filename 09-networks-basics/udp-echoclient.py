@@ -9,4 +9,4 @@ while True:
 	else:
 		client_socket.sendto(data,("localhost", 5000))
 		newdata=client_socket.recvfrom(512)
-		print "Received:", newdata[0]
+		print ("Received:", newdata[0])
