@@ -36,8 +36,8 @@ def receving(name, sock):
 host = socket.gethostbyname(socket.gethostname())
 # Клиент подключается к сети и не создает ее, поэтому порт 0
 port = 0
-
-server = ("127.0.1.1", 6060)  # 192.168.0.118
+server_port = 6060
+server = ("127.0.1.1", server_port)
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.bind((host, port))
 s.setblocking(0)
@@ -68,6 +68,8 @@ while not shutdown:
         except:
             s.sendto(f"[{alias}] <= left chat".encode("utf-8"), server)
             shutdown = True
+
+
 
 chat_threading.join()
 s.close()

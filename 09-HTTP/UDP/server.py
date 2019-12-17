@@ -57,8 +57,6 @@ while not quit:
             if "left chat" in data.decode(("utf-8")):
                 clients.pop(client_name)
                 addr_list.remove(addr)
-                print("after pop", clients)
-                print("after remove", addr_list)
     except:
         print("\n[Server stop]")
         quit = True
