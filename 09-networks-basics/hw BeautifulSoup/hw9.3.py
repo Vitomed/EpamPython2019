@@ -1,18 +1,19 @@
 import requests
-from requests import cookies
+from requests import cookies, Session
 from bs4 import BeautifulSoup as bs
 from requests.auth import HTTPBasicAuth
 
 base_url = "https://pikabu.ru/"
 auth_url = "https://pikabu.ru/@vitomed"
 subs_url = "https://pikabu.ru/subs"
+raiting_url ="https://pikabu.ru/@vitomed/rating"
 NAME = "vitomed"
 KEY = "qwerty1234"
 data = {"username": NAME, "password": KEY}
 headers = {"Accept": "*/*",
            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0"}
 
-cookies = """"""
+cookies = """3:1574450893.5.0.1573126261999:L8tmUw:52.1|862504837.0.2|208439.959546.UWPfbgv_DzZcoP6yRiRWc_18nDg"""
 
 
 def cookie_jar():
@@ -31,9 +32,10 @@ def auth(base_url, data, headers):
     return session
 
 
-def Basic_Auth(url, username, key):
-    requests.get(url , auth=HTTPBasicAuth(username, key))
-    print(requests.get(url , auth=HTTPBasicAuth(username, key)))
+def Basic_Auth(url, username, key, headers):
+    r = requests.post(url, headers, auth=(username, key))
+    print(r.text)
+    print(r.status_code)
 
 
 def parse_url(subs_url, headers):
@@ -45,23 +47,27 @@ def parse_url(subs_url, headers):
         print("Error")
 
 
-def send_cookie(base_url, cookie):
+def send_cookie(base_url, headers, cookie):
     cookies = dict(cookies_are=cookie)
-    r = requests.post(base_url, cookies=cookies)
-    print(r.text)
+    r = requests.post(base_url, headers, cookies=cookies)
+    return r
 
 
-def send_request(base_url, payload, headers):
-    r = requests.post(base_url, data=payload, headers=headers)
-    print(r.text)
+def send_request(username, key):
+    session = requests.Session()
+    session.auth = (username, key)
+    # session.headers.update(headers)
+    return session
 
-
-# auth(base_url, data, HEADERS)
+# auth(base_url, data, headers)
 # parse_url(subs_url, HEADERS)
-send_request(auth_url, data, headers)
+# Basic_Auth(auth_url, NAME, KEY, headers=headers)
+# session = send_request(NAME, KEY)
+# r = send_cookie(subs_url, headers, cookies)
 
-
-
+r = requests.post(subs_url, headers=headers, data=data)
+soup = bs(r.text, "html.parser")
+print(soup.title)
 
 
 # print(r.headers)
@@ -71,18 +77,7 @@ send_request(auth_url, data, headers)
 # print(r2.headers)
 
 
-class Picabu:
-    url = "https://pikabu.ru"
 
-    def auth(self):
-        session = requests.Session()
-        url = self.url + "login"
-        data = {
-            "action": "login",
-            "login": "vitomed",
-            "password": "81dc9bdb52d04dc20036dbd8313ed055"
-        }
-        r = session.post(url, data)
 
 
 # if __name__ == "__main__":
