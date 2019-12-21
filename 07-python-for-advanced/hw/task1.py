@@ -45,15 +45,32 @@ y = SingletonClass()
 print(x == y)
 
 class Cached(type):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__cache = {}
 
-    def __call__(self, *args):
+    def __call__(self, *args, **kwargs):
         if args in self.__cache:
             return self.__cache[args]
         else:
-            obj = super().__call__(*args)
+            obj = super().__call__(*args, **kwargs)
             self.__cache[args] = obj
             return obj
+
+
+class A(metaclass=Cached):
+    def __init__(self, *args, **kwargs):
+        self.a = args
+        self.b = kwargs
+
+
+a = A(1,2)
+b = A(1,2)
+c = A(2,2)
+
+
+unit1 = A('1', '2', a=1)
+unit2 = A('1', '2', a=1)
+print(unit1 is unit2)
 

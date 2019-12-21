@@ -45,7 +45,7 @@ def slow_func(*args, **kwargs):
 
 
 ar = (1,2,3)
-kw = {"1": 1, "0": 0, "5": 5}
+kw = {"1": 1, "0": 0, "5+": 5}
 print("make_cache_with_arg_version1")
 print(slow_func(*ar, **kw))
 time.sleep(1)
@@ -92,7 +92,7 @@ def slow_func(*args, **kwargs):
 
 
 # ar = (1,2,3)
-# kw = {"1": 1, "0": 0, "5": 5}
+# kw = {"1": 1, "0": 0, "5+": 5+}
 #
 # print("make_cache_with_arg_version2")
 # print(slow_func(*ar, **kw))

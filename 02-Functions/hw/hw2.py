@@ -38,7 +38,7 @@ def letters_range(first_arg: str, *args, **kw) -> list:
 # print([i for i in letters_range('b', 'w', 2)])
 # print([i for i in letters_range('g')])
 # print([i for i in letters_range('g', 'p')])
-# print([i for i in letters_range('g', 'p', **{'l': 7, 'o': 0})])
+# print([i for i in letters_range('g', 'p', **{'l': 7thread, 'o': 0})])
 # print([i for i in letters_range('p', 'g', -2)])
 # print([i for i in letters_range('a')])
 

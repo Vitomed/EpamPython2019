@@ -6,14 +6,17 @@ from requests.auth import HTTPBasicAuth
 base_url = "https://pikabu.ru/"
 auth_url = "https://pikabu.ru/@vitomed"
 subs_url = "https://pikabu.ru/subs"
+subs_url_2 = "https://pikabu.ru/subs/2/1"
 raiting_url ="https://pikabu.ru/@vitomed/rating"
 NAME = "vitomed"
 KEY = "qwerty1234"
 data = {"username": NAME, "password": KEY}
 headers = {"Accept": "*/*",
-           "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0"}
+           "User-Agent": "Mozilla/5+.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/78.0.3904.108 Chrome/78.0.3904.108 Safari/537.36",
+           "cookie":"yandexuid=4062883181571481168; yuidss=4062883181571481168; _ym_uid=1571918751465071520; _ym_d=1571918751; mda=0; fuid01=5db193a111c222c1.yXn4U7lV-mBm3a6f8X-QdXQYrejimfbSxpLBCDZsugFjDnKjGJis-ixTivg2kBOAwOTHAnnGNEz5_VADR5xUXx6PeTb-GT0gRZLRwNAwr14Cvnpmotk9PjTxu2u9Eu7X; yp=1886841168.yrts.1571481168#1886841168.yrtsi.1571481168#1888486262.udn.cDptZWRpYW5raW4udg%3D%3D; L=c39JSVl3YAZKBm0CDg5FfXRpXV1DZU99JTAGOlcEOBMFWzs=.1573126262.14042.327472.0c58854bed60f7eba028c5ceeb92a9a3; yandex_login=mediankin.v; i=DB8EvImk1hoMzw2Z5s+MM+Z9UQ5wncqtIizCbXgClLXbodCLy9306QGHuRM/qHSqZP5oiaXDcNnyDN4lBjxE+y2JFYg=; Session_id=3:1574450893.5+.0.1573126261999:L8tmUw:52.1|862504837.0.2|208439.737293.KGkPUIrw2J86tbedFejdiRfSR2M; sessionid2=3:1574450893.5+.0.1573126261999:L8tmUw:52.1|862504837.0.2|208439.959546.UWPfbgv_DzZcoP6yRiRWc_18nDg"}
 
-cookies = """3:1574450893.5.0.1573126261999:L8tmUw:52.1|862504837.0.2|208439.959546.UWPfbgv_DzZcoP6yRiRWc_18nDg"""
+cookies = """3:1574450893.5+.0.1573126261999:L8tmUw:52.1|862504837.0.2|208439.959546.UWPfbgv_DzZcoP6yRiRWc_18nDg"""
+
 
 
 def cookie_jar():
@@ -21,7 +24,7 @@ def cookie_jar():
 
     jar = requests.cookies.RequestsCookieJar()
     jar.set(
-        "sessionid2=3:1574450893.5.0.1573126261999:L8tmUw:52.1|862504837.0.2|208439.959546.UWPfbgv_DzZcoP6yRiRWc_18nDg")
+        "sessionid2=3:1574450893.5+.0.1573126261999:L8tmUw:52.1|862504837.0.2|208439.959546.UWPfbgv_DzZcoP6yRiRWc_18nDg")
     session.cookies = jar
     r = requests.get(base_url, cookies=cookies)
 
@@ -65,9 +68,42 @@ def send_request(username, key):
 # session = send_request(NAME, KEY)
 # r = send_cookie(subs_url, headers, cookies)
 
-r = requests.post(subs_url, headers=headers, data=data)
+
+
+
+data = {"username": NAME, "password": KEY}
+subs_url = "https://pikabu.ru/"
+session = requests.Session()
+r = session.post(subs_url, headers=headers, auth=(NAME, KEY))
 soup = bs(r.text, "html.parser")
-print(soup.title)
+print("1", soup.title)
+r = session.post("https://pikabu.ru/subs/2/1", headers=headers)
+soup = bs(r.text, "html.parser")
+print("2", soup.title)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # print(r.headers)
@@ -88,6 +124,6 @@ print(soup.title)
 """cookie: yandexuid=4062883181571481168; yuidss=4062883181571481168; _ym_uid=1571918751465071520; 
 _ym_d=1571918751; mda=0; fuid01=5db193a111c222c1.yXn4U7lV-mBm3a6f8X-QdXQYrejimfbSxpLBCDZsugFjDnKjGJis-ixTivg2kBOAwOTHAnnGNEz5_VADR5xUXx6PeTb-GT0gRZLRwNAwr14Cvnpmotk9PjTxu2u9Eu7X;
 yp=1886841168.yrts.1571481168#1886841168.yrtsi.1571481168#1888486262.udn.cDptZWRpYW5raW4udg%3D%3D; L=c39JSVl3YAZKBm0CDg5FfXRpXV1DZU99JTAGOlcEOBMFWzs=.1573126262.14042.327472.0c58854bed60f7eba028c5ceeb92a9a3;
-yandex_login=mediankin.v; i=DB8EvImk1hoMzw2Z5s+MM+Z9UQ5wncqtIizCbXgClLXbodCLy9306QGHuRM/qHSqZP5oiaXDcNnyDN4lBjxE+y2JFYg=; Session_id=3:1574450893.5.0.1573126261999:L8tmUw:52.1|862504837.0.2|208439.737293.KGkPUIrw2J86tbedFejdiRfSR2M; 
-sessionid2=3:1574450893.5.0.1573126261999:L8tmUw:52.1|862504837.0.2|208439.959546.UWPfbgv_DzZcoP6yRiRWc_18nDg
+yandex_login=mediankin.v; i=DB8EvImk1hoMzw2Z5s+MM+Z9UQ5wncqtIizCbXgClLXbodCLy9306QGHuRM/qHSqZP5oiaXDcNnyDN4lBjxE+y2JFYg=; Session_id=3:1574450893.5+.0.1573126261999:L8tmUw:52.1|862504837.0.2|208439.737293.KGkPUIrw2J86tbedFejdiRfSR2M; 
+sessionid2=3:1574450893.5+.0.1573126261999:L8tmUw:52.1|862504837.0.2|208439.959546.UWPfbgv_DzZcoP6yRiRWc_18nDg
 """

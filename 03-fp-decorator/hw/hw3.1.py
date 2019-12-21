@@ -1,6 +1,6 @@
 from functools import reduce
 
-"""Problem 6. Sum square difference"""
+"""Problem 6myown. Sum square difference"""
 
 n = 100
 
