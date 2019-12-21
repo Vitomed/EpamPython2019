@@ -2,13 +2,13 @@ import select, socket, sys, queue, time
 from collections import deque
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.setblocking(False)
-server.bind(('localhost', 50002))
+server.bind(('localhost', 50000))
 server.listen(5)
 
 inputs = [server]
 outputs = []
 message_queues = {}
-my_users = {}
+my_users_socket = {}
 remove_sockets = {}
 
 try:
@@ -50,20 +50,32 @@ try:
             else:
                 next_msg = next_msg.decode("utf-8")
                 if next_msg == "clients":
-                    message = [i for i in my_users.values()]
+                    message = [i for i in my_users_socket.values()]
                     s.send(("Список всех участников чата: " + str(message)).encode("utf-8"))
-                elif next_msg == "ЛС":
-                    s.send("Личное сообщение".encode("utf-8"))
+                elif "ЛС" in next_msg:
+                    try:
+                        client_name = next_msg.split(" ")[1]
+                    except Exception as e:
+                        print("exc", e)
+                    else:
+                        if client_name in my_users_socket.values():
+                            message = next_msg.replace(client_name, "")
+                            for sock, name in my_users_socket.items():
+                                if client_name == name:
+                                    print(f"ЛС можно отправить {client_name}")
+                                    sock.send(message.encode("utf-8"))
+                        else:
+                            s.send(f"{client_name} вышел из чате".encode("utf-8"))
                     for sock in inputs:
                         pass
                 elif "your name" in next_msg:
                     name_user = next_msg.split(" ")[-1]
-                    my_users[s] = name_user
-                    print("my_users", my_users)
-                    s.send(f"Подключился пользователь по имени: {name_user}".encode("utf-8"))
-                    # for sock in inputs:
-                    #     if sock != server and sock != s:
-                    #         s.send("Подключился пользователь по имени".encode("utf-8"))
+                    my_users_socket[s] = name_user
+                    print("my_users socket", my_users_socket)
+                    # s.send(f"Подключился пользователь по имени: {name_user}".encode("utf-8"))
+                    for sock in inputs:
+                        if sock != server and sock != s:
+                            sock.send(f"Подключился пользователь по имени: {name_user}".encode("utf-8"))
                 elif "quit" == next_msg:
                     s.close()
                     # remove_sockets[s] = my_users[s]
@@ -71,24 +83,20 @@ try:
                         outputs.remove(s)
                     inputs.remove(s)
                     # del my_users[s]
-                    del message_queues[s]
                     for sock in inputs:
                         if sock != server:
-                            # print("Нас покинул участник", remove_sockets[s])
-                            # sock.send(f"Из чата вышел {remove_sockets[s]}".encode("utf-8"))
-                            print("Нас покинул участник", my_users[s])
-                            sock.send(f"Из чата вышел {my_users[s]}".encode("utf-8"))
-                            # remove_sockets.pop(s)
-                            del my_users[s]
+                            print("Нас покинул участник", my_users_socket[s])
+                            sock.send(f"Из чата вышел {my_users_socket[s]}".encode("utf-8"))
+                    del message_queues[s]
+                    del my_users_socket[s]
 
                 else:
-                    # s.send(next_msg.encode("utf-8"))
-                    time.sleep(1)
+                    # time.sleep(1)
                     for sock in inputs:
                         if sock != server and sock != s:
-                            message_from_username = my_users[s]
+                            message_from_username = my_users_socket[s]
                             print("message from username", message_from_username)
-                            sock.send(f"Сообщение в общем чате от {message_from_username}".encode("utf-8"))
+                            sock.send(f"Сообщение от {message_from_username}: {next_msg}".encode("utf-8"))
 
         print("exceptional", exceptional)
         for s in exceptional:

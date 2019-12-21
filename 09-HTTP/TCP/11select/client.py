@@ -4,7 +4,7 @@ import queue
 import sys
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect(('localhost', 50002))
+client_socket.connect(('localhost', 50000))
 
 import socket
 import sys
@@ -31,7 +31,7 @@ try:
             # sys.stdout.flush()
         else:
             data = client_socket.recv(1024)
-            print("message from server:", data.decode("utf-8"))
+            print(data.decode("utf-8"))
 except KeyboardInterrupt:
     print("Ctr + С. Выход из программы клиента")
 finally:
