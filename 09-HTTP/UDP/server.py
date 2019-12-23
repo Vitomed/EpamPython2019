@@ -52,7 +52,7 @@ while not quit:
             print("Успешно отправлено")
 
         elif "help" in data.decode("utf-8"):
-            s.sendto("help".encode("utf-8"), clients[client_name])
+            s.sendto(help_msg.encode("utf-8"), clients[client_name])
 
         elif "clients" in data.decode("utf-8"):
             try:
