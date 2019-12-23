@@ -10,12 +10,12 @@ def receving(name, sock):
         try:
             while True:
                 data, addr = sock.recvfrom(1024)
-                print(data.decode("utf-8book"))
+                print(data.decode("utf-8"))
 
                 # Симметричное шифрование сообщений. Расшифровка
                 # decrypt = ""
                 # k = False
-                # for i in data.decode("utf-8book"):
+                # for i in data.decode("utf-8"):
                 #     print(i)
                 #     if i == ":":
                 #         k = True
@@ -36,12 +36,11 @@ def receving(name, sock):
 host = socket.gethostbyname(socket.gethostname())
 # Клиент подключается к сети и не создает ее, поэтому порт 0
 port = 0
-server_port = 6060
-server = ("127.0.1.1", server_port)
+server_port = 12722
+server = (host, server_port)
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.bind((host, port))
 s.setblocking(0)
-
 user_name = input("Name: ")
 
 chat_threading = threading.Thread(target=receving, args=("RecvThread", s))
@@ -50,7 +49,7 @@ chat_threading.start()
 while not shutdown:
     if not join:
         # При подключении к пользователю
-        s.sendto(f"[{user_name}] => join chat".encode("utf-8book"), server)
+        s.sendto(f"[{user_name}] => join chat".encode("utf-8"), server)
         join = True
     else:
         try:
@@ -63,13 +62,11 @@ while not shutdown:
             # message = crypt
 
             if message != "":
-                s.sendto(f"[{user_name}] :: {message}".encode("utf-8book"), server)
+                s.sendto(f"[{user_name}] :: {message}".encode("utf-8"), server)
             time.sleep(0.2)
         except:
-            s.sendto(f"[{user_name}] <= left chat".encode("utf-8book"), server)
+            s.sendto(f"[{user_name}] <= left chat".encode("utf-8"), server)
             shutdown = True
-
-
 
 chat_threading.join()
 s.close()
