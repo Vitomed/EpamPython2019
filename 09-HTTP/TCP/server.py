@@ -1,5 +1,6 @@
 import select, socket, sys, queue, time
 from collections import deque
+
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.setblocking(False)
 server.bind(('localhost', 50000))
@@ -10,6 +11,14 @@ outputs = []
 message_queues = {}
 my_users_socket = {}
 remove_sockets = {}
+help_msg = """
+* Чтобы написать ЛС участнику чата, необходимо написать команду ЛС name, 
+где name - это имя клиента, которому хочешь написать
+
+* Чтобы покинуть чат, нужно нажать ctrl+C
+
+* Посмотри всех участников чата, напиши слово:
+				clients"""
 
 try:
     while inputs:
@@ -54,6 +63,10 @@ try:
                 if next_msg == "clients":
                     message = [i for i in my_users_socket.values()]
                     s.send(("Список всех участников чата: " + str(message)).encode("utf-8"))
+
+                elif next_msg == "help":
+                    s.send((help_msg).encode("utf-8"))
+
 
                 elif "ЛС" in next_msg:
                     try:
