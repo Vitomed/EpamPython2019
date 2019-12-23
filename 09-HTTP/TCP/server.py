@@ -3,7 +3,7 @@ from collections import deque
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.setblocking(False)
-server.bind(('localhost', 50000))
+server.bind(('localhost', 33310))
 server.listen(5)
 
 inputs = [server]

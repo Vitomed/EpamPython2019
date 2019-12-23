@@ -5,7 +5,7 @@ import sys
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
-    client_socket.connect(('localhost', 50000))
+    client_socket.connect(('localhost', 33310))
 except:
     print("Server не отвечает")
 else:
