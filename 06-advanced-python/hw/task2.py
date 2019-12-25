@@ -138,7 +138,7 @@ class Quaternion:
             new_a = (self.a * other.a - self.b * other.b -
                      self.c * other.c - self.d * other.d)
 
-            new_b = (self.a * other.b - self.b * other.a +
+            new_b = (self.a * other.b + self.b * other.a +
                      self.c * other.d - self.d * other.c)
 
             new_c = (self.a * other.c - self.b * other.d +
@@ -177,6 +177,18 @@ class Quaternion:
             raise TypeError("Undefined type")
         return Quaternion(new_a, new_b, new_c, new_d)
 
+    def __gt__(self, other):
+        if isinstance(other, Quaternion):
+            return self.a > other.a or self.b > other.b or self.c > other.c or self.d > other.b
+        else:
+            raise TypeError(f"'>' not supported between instances of Quaternion and {type(other)}")
+
+    def __lt__(self, other):
+        if isinstance(other, Quaternion):
+            return self.a < other.a or self.b < other.b or self.c < other.c or self.d < other.b
+        else:
+            raise TypeError(f"'<' not supported between instances of Quaternion and {type(other)}")
+
     def __eq__(self, other):
         return self.a == other.a and self.b == other.b and self.c == other.c and self.d == other.d
 
@@ -191,6 +203,7 @@ class Quaternion:
 
     def __repr__(self):
         return f"Quaternion({self.a}, {self.b}, {self.c}, {self.d})"
+
 
 
 def test_add():
@@ -232,4 +245,5 @@ if __name__ == '__main__':
     test_subtract()
     test_mul()
     test_divide()
+    print(q < p)
 
