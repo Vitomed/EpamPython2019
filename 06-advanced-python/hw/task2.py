@@ -205,22 +205,26 @@ class Quaternion:
         return f"Quaternion({self.a}, {self.b}, {self.c}, {self.d})"
 
 
-
-def test_add():
-    assert q + p == Quaternion(q.a + p.a, q.b + p.b, q.c + p.c, q.d + p.d)
+def test_add(q1, q2):
+    assert q1 + q2 == Quaternion(q1.a + q2.a, q1.b + q2.b, q1.c + q2.c, q1.d + q2.d)
     for s in [-3, -2.3, -1.2, -1.0, 0.0, 0, 1.0, 1, 1.2, 2.3, 3]:
-        assert (q + s == Quaternion(q.a + s, q.b, q.c, q.d))
-        assert (s + q == Quaternion(q.a + s, q.b, q.c, q.d))
+        assert (q1 + s == Quaternion(q1.a + s, q1.b, q1.c, q1.d))
+        assert (s + q1 == Quaternion(q1.a + s, q1.b, q1.c, q1.d))
 
 
-def test_subtract():
-    assert q - p == Quaternion(q.a - p.a, q.b - p.b, q.c - p.c, q.d - p.d)
+def test_subtract(q1, q2):
+    assert q1 - q2 == Quaternion(q1.a - q2.a, q1.b - q2.b, q1.c - q2.c, q1.d - q2.d)
     for s in [-3, -2.3, -1.2, -1.0, 0.0, 0, 1.0, 1, 1.2, 2.3, 3]:
-        assert (q - s == Quaternion(q.a - s, q.b, q.c, q.d))
-        assert (s - q == Quaternion(s - q.a, -q.b, -q.c, -q.d))
+        assert (q1 - s == Quaternion(q1.a - s, q1.b, q1.c, q1.d))
+        assert (s - q1 == Quaternion(s - q1.a, -q1.b, -q1.c, -q1.d))
 
+def test_divide(q):
+    assert q / 1.0 == q
+    assert q / 1 == q
+    for s in [-2.3, -1.2, -1.0, 1.0, 1, 1.2, 2.3]:
+        assert q / s == q * (1.0 / s)
 
-def test_mul():
+def test_mul(q):
     assert q * 1.0 == q
     assert q * 1 == q
     assert 1.0 * q == q
@@ -231,19 +235,15 @@ def test_mul():
         assert s * q == q * s
 
 
-def test_divide():
-    assert q / 1.0 == q
-    assert q / 1 == q
-    for s in [-2.3, -1.2, -1.0, 1.0, 1, 1.2, 2.3]:
-        assert q / s == q * (1.0 / s)
+
 
 
 if __name__ == '__main__':
-    q = Quaternion(10, 2, 7, 1)
-    p = Quaternion(0, 22, 3, 4)
-    test_add()
-    test_subtract()
-    test_mul()
-    test_divide()
-    print(q < p)
+    q1 = Quaternion(10, 2, 7, 1)
+    q2 = Quaternion(0, 22, 3, 4)
+    test_add(q1, q2)
+    test_subtract(q1, q2)
+    test_mul(q2)
+    test_divide(q1)
+    print(q1 < q2)
 
