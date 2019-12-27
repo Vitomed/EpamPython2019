@@ -60,58 +60,11 @@ class Warehouse(Building):
         print("Закончились")
 
 
-class DispetcherTimeTrasport:
-
-    def __init__(self, transport):
-        self.transport = (transport,)
-
-    def checking_transport_time(self):
-        for rout_situation in self.transport:
-            print(rout_situation.time)
-            if rout_situation.time == 0:  # It's redy to start
-                return True
-            else:
-                return False
-
-
-class DispetcherBuild:
-
-    def __init__(self, build):
-        self.build = (build,)
-
-    def checking_cargo_in_build(self):
-        for each_build in self.build:
-            print(each_build.storage)
-            if each_build.storage:  # It's redy to pop
-                print("redy to pop")
-                return True
-            else:
-                print("Empty storage")
-                return False  # Empty storage
-
-
-class DispetcherMove:
-    def __init__(self):
-        pass
-
-# a = "B"
-# port = Warehouse()
-# dispetcherBuild = DispetcherBuild(port)
-# port.storage += "AB"
-# print(port.pop_element)
-# print(port.pop_element)
-# print(dispetcherBuild.checking_cargo_in_build())
-# port + deque("B")
-# port += deque("C")
-# print(port)
-
-rout_map = {"A": 1, "B": 5, "Port": 4}
-
 class Transport:
 
-    def __init__(self, route_map):
+    def __init__(self, route_map, time):
 
-        self.time_in_rout = 0
+        self.time = time
         self.cargo_on_board = None
 
     def move_on_route(self, route_map, endpoint, cargo):
@@ -119,7 +72,82 @@ class Transport:
         self.time_in_rout = 2*route_map[endpoint]
         self.cargo_on_board = cargo
 
-car = Transport()
+
+class DispetcherTimeTrasport:
+
+    def __init__(self, transport1, transport2):
+        self.transport = (transport1, transport2)
+        self.status = None
+        self.output = []
+
+    def checking_transport_time(self):
+        for rout_situation in self.transport:
+            print("transport time: ", rout_situation.time)
+
+            if rout_situation.time == 0 and not self.output:  # It's redy to start
+                print("Redy to start")
+                self.output.append(rout_situation)
+
+            else:
+                print("Does not redy to start")
+                self.status = False
+
+
+
+class DispetcherBuild:
+
+    def __init__(self, build):
+        self.build = (build,)
+        self.output = []
+
+    def checking_cargo_in_build(self):
+        for each_build in self.build:
+            print(each_build.storage)
+            if each_build.storage and not self.output:  # It's redy to pop
+                print("redy to pop")
+                # return True
+            else:
+                print("Empty storage")
+                # return False  # Empty storage
+
+class DispetcherMove:
+    def __init__(self, disptime, dispbuild):
+        self.dtime = disptime
+        self.dbuild = dispbuild
+
+    def start_move(self):
+        if self.dtime.output and self.dbuild.output:
+            print("Start move")
+        else:
+            print("Wait")
+
+
+rout_map = {"A": 1, "B": 5, "Port": 4}
+
+time = 0
+while time < 2:
+
+    port = Warehouse()
+    port.storage += "AB"
+
+    dispetcherBuild = DispetcherBuild(port)
+    dispetcherBuild.checking_cargo_in_build()
+
+    car1 = Transport(rout_map, time=0)
+    car2 = Transport(rout_map, time=1)
+
+
+    dispetcherTime = DispetcherTimeTrasport(car1, car2)
+    dispetcherTime.checking_transport_time()
+
+    dispetcherMove = DispetcherMove(dispetcherTime, dispetcherBuild)
+    dispetcherMove.start_move()
+
+    time += 1
+
+
+
+
 
 
 class Timer:
