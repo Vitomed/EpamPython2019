@@ -62,86 +62,126 @@ class Warehouse(Building):
 
 class Transport:
 
-    def __init__(self, route_map, time):
+    def __init__(self, rout_map, time, garage):
 
         self.time = time
         self.cargo_on_board = None
+        self.garage = garage.__class__
+        self.rout_map = rout_map
+        self.half_path = time//2
 
-    def move_on_route(self, route_map, endpoint, cargo):
-        self.route_map = route_map
-        self.time_in_rout = 2*route_map[endpoint]
+    def move_on_route(self, rout_map, endpoint, cargo):
+        self.time_in_rout = 2*rout_map[endpoint]
         self.cargo_on_board = cargo
 
+    def put_cargo(self, endpoint):
+        endpoint.append(self.cargo_on_board)
+        self.cargo_on_board = None
+
+    def set_cargo(self, item):
+        self.cargo_on_board = item
+
+class Truck(Transport):
+    def __init__(self, rout_map, time, garage):
+        super().__init__(rout_map, time, garage)
+
+class Ship(Transport):
+    def __init__(self, rout_map, time, garage):
+        super().__init__(rout_map, time, garage)
 
 class DispetcherTimeTrasport:
 
-    def __init__(self, transport1, transport2):
-        self.transport = (transport1, transport2)
-        self.status = None
+    # def __init__(self, transport1, transport2, sip):
+    #     self.transport = (transport1, transport2, sip)
+    def __init__(self, transport1):
+        self.transport = (transport1,)
+        self.status = True
         self.output = []
 
     def checking_transport_time(self):
         for rout_situation in self.transport:
             print("transport time: ", rout_situation.time)
 
-            if rout_situation.time == 0 and not self.output:  # It's redy to start
-                print("Redy to start")
+            # if rout_situation.time == 0 and not self.output:  # It's redy to start
+            if rout_situation.time == 0:  # It's redy to start
+                print("Redy to start, оповещаем о готовности к отправке")
                 self.output.append(rout_situation)
-
+                self.status = True
+            elif rout_situation.time == rout_situation.half_path:
+                print("Half path")
             else:
-                print("Does not redy to start")
+                print("Does not redy to start, Меняем время в машине")
                 self.status = False
-
-
 
 class DispetcherBuild:
 
-    def __init__(self, build):
-        self.build = (build,)
+    # def __init__(self, factory, port):
+    #     self.build = (factory, port)
+    def __init__(self, factory):
+        self.build = (factory,)
+        self.status = None
         self.output = []
 
     def checking_cargo_in_build(self):
         for each_build in self.build:
             print(each_build.storage)
-            if each_build.storage and not self.output:  # It's redy to pop
+            # if each_build.storage and not self.output:  # It's redy to pop
+            if each_build.storage:  # It's redy to pop
+                self.status = True
                 print("redy to pop")
                 # return True
             else:
                 print("Empty storage")
+                self.status = False
                 # return False  # Empty storage
 
 class DispetcherMove:
-    def __init__(self, disptime, dispbuild):
+    def __init__(self, disptime, dispbuild, transport):
         self.dtime = disptime
         self.dbuild = dispbuild
+        self.transport = transport
 
     def start_move(self):
-        if self.dtime.output and self.dbuild.output:
-            print("Start move")
-        else:
-            print("Wait")
+        print("DispMove", transport.garage)
+        # self.transport.set_cargo("A")
 
+    def finish_move(self):
+        print("Я доехала до пункта назначения")
 
-rout_map = {"A": 1, "B": 5, "Port": 4}
+builds = {"A": "Factory", "B": "Factory"}
+
+#  У каждого транспорта, своя дорожная карта
+rout_map_truck = {"A": 1, "B": 5}
+rout_map_ship = {"A": 4}
 
 time = 0
+
+
+factory = Factory()
+factory.storage += "AB"
+
+port = Port()
+port.storage += "DC"
+
+car1 = Truck(rout_map_truck, time=0, garage=factory)
+car2 = Truck(rout_map_truck, time=1, garage=factory)
+ship = Ship(rout_map_ship, time=1, garage=port)
+
+# dispetcherTime = DispetcherTimeTrasport(car1)
+# dispetcherBuild = DispetcherBuild(factory)
+
+
 while time < 2:
+    for transport in [car1, car2, ship]:
+        dispetcherTime = DispetcherTimeTrasport(transport)
+        dispetcherBuild = DispetcherBuild(factory)
 
-    port = Warehouse()
-    port.storage += "AB"
+        dispetcherTime.checking_transport_time()
+        dispetcherBuild.checking_cargo_in_build()
+        dispetcherMove = DispetcherMove(dispetcherTime, dispetcherBuild, transport)
 
-    dispetcherBuild = DispetcherBuild(port)
-    dispetcherBuild.checking_cargo_in_build()
-
-    car1 = Transport(rout_map, time=0)
-    car2 = Transport(rout_map, time=1)
-
-
-    dispetcherTime = DispetcherTimeTrasport(car1, car2)
-    dispetcherTime.checking_transport_time()
-
-    dispetcherMove = DispetcherMove(dispetcherTime, dispetcherBuild)
-    dispetcherMove.start_move()
+        if dispetcherBuild.status and dispetcherTime.status:
+            dispetcherMove.start_move()
 
     time += 1
 
