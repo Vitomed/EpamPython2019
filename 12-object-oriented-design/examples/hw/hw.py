@@ -20,13 +20,9 @@ class MixIn:
 
 
 class Building(MixIn):
-    # def __init__(self, first_commit=0):
-    #
-    #     self.first_commit_my_storage = first_commit
-    #     self.storage = deque(first_commit)
+
     def __init__(self):
         self.storage = deque()
-
 
 class Factory(Building):
 
@@ -39,7 +35,6 @@ class Factory(Building):
             return self.storage.popleft()
 
         print("Закончились")
-
 
 class Port(Building):
 
@@ -69,16 +64,16 @@ class Warehouse(Building):
 
 class Time:
 
-    def __init__(self, one, two):
-        self.time_to_endpoint = one
-        self.time_in_rout = two
+    # def __init__(self):
+    #     self.timer = 0
+    pass
 
 class Transport(Time):
 
     def __init__(self, rout_map, garage, endpoint):
-        super().__init__(one=0, two=0)
-        # self.time_to_endpoint = 0
-        # self.time_in_rout = 0
+        super().__init__()
+        self.time_to_endpoint = 0
+        self.time_in_rout = 0
         self.cargo_on_board = deque()
 
         self.garage = garage
@@ -90,12 +85,13 @@ class Transport(Time):
         self.cargo_on_board += self.garage.storage.popleft()
         print("А теперь я забрал груз и везу его:", self.cargo_on_board)
         self.time_to_endpoint = self.rout_map[self.cargo_on_board[0]]
-        self.time_in_rout = self.time_to_endpoint * 2
+        self.time_in_rout += self.time_to_endpoint * 2
         print("Время в конечную точку составляет: ", self.time_to_endpoint)
         print("До того, как вернуться обратно осталось: ", self.time_in_rout)
 
 
     def put_cargo(self):
+        # super().timer += self.time_in_rout
         self.endpoint[self.cargo_on_board[0]] += self.cargo_on_board
         print(self.endpoint[self.cargo_on_board[0]])
         self.cargo_on_board = deque()
@@ -126,15 +122,18 @@ class DispetcherTimeTrasport:
         for rout_situation in self.transport:
             print("transport class", rout_situation.__class__)
 
-            # if rout_situation.time == 0 and not self.output:  # It's redy to start
             if rout_situation.time_to_endpoint == 0:  # It's redy to start
                 print("Redy to start, оповещаем о готовности к отправке")
                 self.status = True  # Готов к новым путешествиям - Да!
+
+                rout_situation.time_in_rout = rout_situation.time_in_rout - 1
 
             elif rout_situation.time_to_endpoint == rout_situation.time_in_rout and rout_situation.cargo_on_board:
                 rout_situation.put_cargo()
                 print("Груз доставлен")
                 self.status = False
+
+                rout_situation.time_in_rout = rout_situation.time_in_rout - 1
 
             elif rout_situation.time_in_rout == 0:
                 print("Обнулим время time to endpoint")
@@ -192,41 +191,46 @@ class DispetcherMove:  # Класс, для учета времени доста
 
 #  У каждого транспорта, своя дорожная карта
 
+# cargo = "ABB"
 cargo = "AA"
+# cargo = "AB"
 factory = Factory()
 factory.storage += cargo
-print(factory)
 
 port = Port()
-# port.storage += ""
 
 WB = Warehouse()
 WA = Warehouse()
 
 endpoint_Truck = {"A": port, "B": WB}
-rout_map_truck = {"A": 1, "B": 1}
+rout_map_truck = {"A": 1, "B": 5}
 
 endpoint_Ship = {"A": WA}
 rout_map_ship = {"A": 4}
 
 garage = [factory, port]
-endpoints = [port, WA]
+endpoints = [port, WA, WB]
+
+# garage = [factory]
+# endpoints = [port]
 
 car1 = Truck(rout_map_truck, garage=factory, endpoint=endpoint_Truck)
-# car2 = Truck(rout_map_truck, garage=factory, endpoint=endpoint_Truck)
+car2 = Truck(rout_map_truck, garage=factory, endpoint=endpoint_Truck)
 ship1 = Ship(rout_map_ship, garage=port, endpoint=endpoint_Ship)
-ship2 = Ship(rout_map_ship, garage=port, endpoint=endpoint_Ship)
+# ship2 = Ship(rout_map_ship, garage=port, endpoint=endpoint_Ship)
 
 
 print("[Start While]")
 print("\n")
 count = 1
-while count < 20:
+timer = 0
+while count:
 
     # for transport in [car1, ship1, ship2]:
-    for transport in [car1]:
+    for transport in [car1, car2, ship1]:
         print("count iterations: ", count)
         print("=====================================")
+
         dispetcherTime = DispetcherTimeTrasport(transport)
         dispetcherBuild = DispetcherBuild(transport.garage)
 
@@ -236,26 +240,24 @@ while count < 20:
         dispetcherMove = DispetcherMove(endpoints, garage)
         dispetcherMove.counter()
 
-        # print("len AA", len("AA"))
-        # print(sum(dispetcherMove.len_element_endpoints.values()))
-        # print(sum(dispetcherMove.len_element_endpoints.values()) == len(cargo))
-
         if dispetcherBuild.status and dispetcherTime.status:
             transport.move_on_route()
 
             print("// Груз, который сейчас на фабрике", factory)
             print("=====================================")
 
-
-    if sum(dispetcherMove.len_element_endpoints.values()) == len("AA") and not any(dispetcherMove.len_element_garage.values()):
+    if sum(dispetcherMove.len_element_endpoints.values()) == len(cargo) and not any(dispetcherMove.len_element_garage.values()):
         print("Закончили на итерации", count)
-        print(sum(dispetcherMove.len_element_endpoints.values()) == len("AA"))
         break
+    else:
+        timer += 1
 
-    count += 1
-
+print("timer", timer)
 print("3 Груз, который сейчас на фабрике", factory)
 print("4 Груз, который пришел в порт", port)
+print("5 Груз, который пришел в WA", WA)
+print("6 Груз, который пришел в WB", WB)
+# print("Timer", car1.timer)
 print("[Finish while]")
 
 
