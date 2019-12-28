@@ -2,15 +2,7 @@ from abc import ABC, abstractmethod
 from collections import deque
 
 
-class Building:
-
-    # def __init__(self, first_commit=0):
-    #
-    #     self.first_commit_my_storage = first_commit
-    #     self.storage = deque(first_commit)
-    def __init__(self):
-
-        self.storage = deque()
+class MixIn:
 
     def __add__(self, other):
         self.storage = self.storage + other
@@ -27,6 +19,15 @@ class Building:
         return f"{self.storage}"
 
 
+class Building(MixIn):
+    # def __init__(self, first_commit=0):
+    #
+    #     self.first_commit_my_storage = first_commit
+    #     self.storage = deque(first_commit)
+    def __init__(self):
+        self.storage = deque()
+
+
 class Factory(Building):
 
     def __init__(self):
@@ -38,6 +39,7 @@ class Factory(Building):
             return self.storage.popleft()
 
         print("Закончились")
+
 
 class Port(Building):
 
@@ -65,12 +67,18 @@ class Warehouse(Building):
         print("Закончились")
 
 
-class Transport:
+class Time:
+
+    def __init__(self, one, two):
+        self.time_to_endpoint = one
+        self.time_in_rout = two
+
+class Transport(Time):
 
     def __init__(self, rout_map, garage, endpoint):
-
-        self.time_to_endpoint = 0
-        self.time_in_rout = 0
+        super().__init__(one=0, two=0)
+        # self.time_to_endpoint = 0
+        # self.time_in_rout = 0
         self.cargo_on_board = deque()
 
         self.garage = garage
@@ -116,6 +124,7 @@ class DispetcherTimeTrasport:
 
     def checking_transport_time(self):
         for rout_situation in self.transport:
+            print("transport class", rout_situation.__class__)
 
             # if rout_situation.time == 0 and not self.output:  # It's redy to start
             if rout_situation.time_to_endpoint == 0:  # It's redy to start
@@ -146,14 +155,14 @@ class DispetcherBuild:
 
     # def __init__(self, factory, port):
     #     self.build = (factory, port)
-    def __init__(self, factory):
-        self.builds = (factory,)
+    def __init__(self, build):
+        self.builds = (build,)
         self.status = None
         # self.output = []
 
     def checking_cargo_in_build(self):
         for each_build in self.builds:
-            print("Ситуация в хранилище garage", each_build.storage)
+            print("Ситуация в хранилище garage", each_build.__class__, each_build.storage)
             # if each_build.storage and not self.output:  # It's redy to pop
 
             if each_build.storage:  # It's redy to pop
@@ -168,28 +177,28 @@ class DispetcherBuild:
 
 class DispetcherMove:  # Класс, для учета времени доставки
 
-    def __init__(self, endpoints):
+    def __init__(self, endpoints, garage):
         self.endpoint = endpoints
-        self.len_element = {}
+        self.garage = garage
+        self.len_element_endpoints = {}
+        self.len_element_garage = {}
 
     def counter(self):
         for endpoint_element in self.endpoint:
-            self.len_element[endpoint_element] = len(endpoint_element.storage)
-        print("garage counter", self.len_element)
-
-    def finish_move(self):
-        print("Я доехала до пункта назначения")
+            self.len_element_endpoints[endpoint_element] = len(endpoint_element.storage)
+        print("garage counter", self.len_element_endpoints)
+        for garage_element in self.garage:
+            self.len_element_garage[garage_element] = len(garage_element.storage)
 
 #  У каждого транспорта, своя дорожная карта
-time = 0
 
-
+cargo = "AA"
 factory = Factory()
-factory.storage += "AA"
+factory.storage += cargo
 print(factory)
 
 port = Port()
-port.storage += ""
+# port.storage += ""
 
 WB = Warehouse()
 WA = Warehouse()
@@ -200,37 +209,36 @@ rout_map_truck = {"A": 1, "B": 1}
 endpoint_Ship = {"A": WA}
 rout_map_ship = {"A": 4}
 
-garage = [factory]
-endpoints = [port]
+garage = [factory, port]
+endpoints = [port, WA]
 
 car1 = Truck(rout_map_truck, garage=factory, endpoint=endpoint_Truck)
-car2 = Truck(rout_map_truck, garage=factory, endpoint=endpoint_Truck)
-# ship = Ship(rout_map_ship, time=1, garage=port, endpoint=endpoint_Ship)
+# car2 = Truck(rout_map_truck, garage=factory, endpoint=endpoint_Truck)
+ship1 = Ship(rout_map_ship, garage=port, endpoint=endpoint_Ship)
+ship2 = Ship(rout_map_ship, garage=port, endpoint=endpoint_Ship)
 
-# dispetcherTime = DispetcherTimeTrasport(car1)
-# dispetcherBuild = DispetcherBuild(factory)
 
 print("[Start While]")
 print("\n")
 count = 1
-while count < 40:
+while count < 20:
 
-    # for transport in [car1, car2, ship]:
-    for transport in [car1, car2]:
+    # for transport in [car1, ship1, ship2]:
+    for transport in [car1]:
         print("count iterations: ", count)
         print("=====================================")
         dispetcherTime = DispetcherTimeTrasport(transport)
-        dispetcherBuild = DispetcherBuild(factory)
+        dispetcherBuild = DispetcherBuild(transport.garage)
 
         dispetcherTime.checking_transport_time()
         dispetcherBuild.checking_cargo_in_build()
 
-        dispetcherMove = DispetcherMove(endpoints)
+        dispetcherMove = DispetcherMove(endpoints, garage)
         dispetcherMove.counter()
 
-        print("len AA", len("AA"))
-        print(sum(dispetcherMove.len_element.values()))
-        print(sum(dispetcherMove.len_element.values()) == len("AA"))
+        # print("len AA", len("AA"))
+        # print(sum(dispetcherMove.len_element_endpoints.values()))
+        # print(sum(dispetcherMove.len_element_endpoints.values()) == len(cargo))
 
         if dispetcherBuild.status and dispetcherTime.status:
             transport.move_on_route()
@@ -239,9 +247,9 @@ while count < 40:
             print("=====================================")
 
 
-    if sum(dispetcherMove.len_element.values()) == len("AA"):
+    if sum(dispetcherMove.len_element_endpoints.values()) == len("AA") and not any(dispetcherMove.len_element_garage.values()):
         print("Закончили на итерации", count)
-        print(sum(dispetcherMove.len_element.values()) == len("AA"))
+        print(sum(dispetcherMove.len_element_endpoints.values()) == len("AA"))
         break
 
     count += 1
