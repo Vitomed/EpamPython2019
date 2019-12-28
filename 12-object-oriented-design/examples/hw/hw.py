@@ -21,7 +21,6 @@ class MixIn:
 class Building(MixIn):
     def __init__(self, build_name):
         """
-
         :param build_name: specific building name
         :param storage: place for storing cargo
 
@@ -30,25 +29,28 @@ class Building(MixIn):
         applying special concatenation for this class (use case: building_istance + "cargo").
         """
         self.storage = deque()
+        # self._storage = deque()
         self.name = build_name
+
+    # @property
+    # def storage(self):
+    #     return self._storage
+
+    # @storage.setter
+    # def storage(self, item):
+    #     self._storage += item
 
 
 class Factory(Building):
-
-    def __init__(self, build_name):
-        super().__init__(build_name)
+    pass
 
 
 class Port(Building):
-
-    def __init__(self, build_name):
-        super().__init__(build_name)
+    pass
 
 
 class Warehouse(Building):
-
-    def __init__(self, build_name):
-        super().__init__(build_name)
+    pass
 
 
 class Time:
@@ -90,7 +92,7 @@ class Transport(Time):
         self.cargo_on_board += self.garage.storage.popleft()
         print("Я забрал новый груз и везу его:", self.cargo_on_board)
 
-    def take_rout_settings(self):
+    def set_rout_settings(self):
         """
         View the roadmap and remember the characteristics
         of the route: The length of the route for cargo on board
@@ -106,27 +108,27 @@ class Transport(Time):
 
 
 class Truck(Transport):
-    def __init__(self, transport_name, rout_map, garage, endpoint):
-        super().__init__(transport_name, rout_map, garage, endpoint)
+    pass
 
 
 class Ship(Transport):
-    def __init__(self, transport_name, rout_map, garage, endpoint):
-        super().__init__(transport_name, rout_map, garage, endpoint)
+    pass
 
 
 class DispetcherTimeTrasport:
 
-    def __init__(self, transport):
+    # def __init__(self, transport):
+    def __init__(self):
 
         """
         :param transport: class instance transport
         :param status: signals whether the vehicle is ready to take cargo on board
         """
-        self.transport = transport
+        # self.transport = transport
         self.status = True
 
-    def checking_transport_time(self):
+    # def checking_transport_time(self, transport):
+    def checking_transport_time(self, transport):
 
         """
         checks the condition of the vehicle and corrects or maintains status
@@ -157,23 +159,47 @@ class DispetcherTimeTrasport:
         print("Остаток времени до прибытия обратно в гараж: ", transport.time_come_back)
 
 
+# class DispetcherBuildSituation:
+#
+#     # def __init__(self, build: object):
+#     def __init__(self, build: object):
+#         """
+#         :param build: is a garage - warehouse, from where the vehicle receives the goods
+#         :param status: signals whether the storage is ready cargo has been issued for the vehicle
+#         """
+#         self.garage = build
+#         self.status = None
+#
+#     def checking_cargo_in_build(self):
+#         """
+#         Checks the availability of cargo in the storage and changes the status:
+#         (Yes - you can receive the cargo, No - the storage is empty)
+#         """
+#         print(f"Ситуация в хранилище {self.garage.name}:", self.garage.storage)
+#         if self.garage.storage:  # It's redy to pop
+#             self.status = True
+#             print("redy to pop")
+#         else:
+#             self.status = False
+#             print("Empty storage")
+
+
 class DispetcherBuildSituation:
 
-    def __init__(self, build):
+    def __init__(self):
         """
         :param build: is a garage - warehouse, from where the vehicle receives the goods
         :param status: signals whether the storage is ready cargo has been issued for the vehicle
         """
-        self.garage = build
         self.status = None
 
-    def checking_cargo_in_build(self):
+    def checking_cargo_in_build(self, garage):
         """
         Checks the availability of cargo in the storage and changes the status:
         (Yes - you can receive the cargo, No - the storage is empty)
         """
-        print(f"Ситуация в хранилище {self.garage.name}:", self.garage.storage)
-        if self.garage.storage:  # It's redy to pop
+        print(f"Ситуация в хранилище {garage.name}:", garage.storage)
+        if garage.storage:  # It's redy to pop
             self.status = True
             print("redy to pop")
         else:
@@ -213,10 +239,12 @@ class DispetcherMove:  # Класс, для подстчета контейне�
         for garage_element in self.garage:
             self.count_cargo_in_garages[garage_element] = len(garage_element.storage)
 
-# cargo = "A"
+cargo = "A"
 # cargo = "AB"
 # cargo = "BB"
-cargo = "ABB"
+# cargo = "ABB"
+# cargo = "AABABBAB"
+# cargo = "ABBBABAAABBB"
 factory = Factory("Factory")
 factory.storage += cargo
 
@@ -244,27 +272,34 @@ truck_2 = Truck(transport_name="Truck_2", rout_map=rout_map_Truck, garage=factor
 ship = Truck(transport_name="Ship", rout_map=rout_map_ship, garage=port, endpoint=endpoint_Ship)
 
 transports = [truck_1, truck_2, ship]
+print(f"Тест с грузом: {cargo}")
 print("[Start]\n")
 count = 1
 timer = 0
+
+# Исправить создание каждый раз нового
+dispetcherTime = DispetcherTimeTrasport()
+dispetcherBuild = DispetcherBuildSituation()
+dispetcherMove = DispetcherMove(endpoints, garage)
+
 while count:
 
     for transport in transports:
         print("count iterations: ", count)
         print(f"timer: {timer} =====================================")
 
-        dispetcherTime = DispetcherTimeTrasport(transport)
-        dispetcherBuild = DispetcherBuildSituation(transport.garage)
+        # dispetcherTime = DispetcherTimeTrasport(transport)
+        # dispetcherBuild = DispetcherBuildSituation(transport.garage)
 
-        dispetcherTime.checking_transport_time()
-        dispetcherBuild.checking_cargo_in_build()
+        dispetcherTime.checking_transport_time(transport)
+        dispetcherBuild.checking_cargo_in_build(transport.garage)
 
-        dispetcherMove = DispetcherMove(endpoints, garage)
+        # dispetcherMove = DispetcherMove(endpoints, garage)
         dispetcherMove.counter()
 
         if dispetcherBuild.status and dispetcherTime.status:
             transport.take_cargo_from_garage()
-            transport.take_rout_settings()
+            transport.set_rout_settings()
 
     if sum(dispetcherMove.count_cargo_in_endpoints.values()) == len(cargo) and not any(
             dispetcherMove.count_cargo_in_garages.values()):
