@@ -4,7 +4,12 @@ from collections import deque
 
 class Building:
 
+    # def __init__(self, first_commit=0):
+    #
+    #     self.first_commit_my_storage = first_commit
+    #     self.storage = deque(first_commit)
     def __init__(self):
+
         self.storage = deque()
 
     def __add__(self, other):
@@ -62,152 +67,189 @@ class Warehouse(Building):
 
 class Transport:
 
-    def __init__(self, rout_map, time, garage):
+    def __init__(self, rout_map, garage, endpoint):
 
-        self.time = time
-        self.cargo_on_board = None
-        self.garage = garage.__class__
+        self.time_to_endpoint = 0
+        self.time_in_rout = 0
+        self.cargo_on_board = deque()
+
+        self.garage = garage
         self.rout_map = rout_map
-        self.half_path = time//2
+        self.endpoint = endpoint
 
-    def move_on_route(self, rout_map, endpoint, cargo):
-        self.time_in_rout = 2*rout_map[endpoint]
-        self.cargo_on_board = cargo
+    def move_on_route(self):
+        print("Я пустой и нахожусь в гараже: ", self.cargo_on_board)
+        self.cargo_on_board += self.garage.storage.popleft()
+        print("А теперь я забрал груз и везу его:", self.cargo_on_board)
+        self.time_to_endpoint = self.rout_map[self.cargo_on_board[0]]
+        self.time_in_rout = self.time_to_endpoint * 2
+        print("Время в конечную точку составляет: ", self.time_to_endpoint)
+        print("До того, как вернуться обратно осталось: ", self.time_in_rout)
 
-    def put_cargo(self, endpoint):
-        endpoint.append(self.cargo_on_board)
-        self.cargo_on_board = None
 
-    def set_cargo(self, item):
-        self.cargo_on_board = item
+    def put_cargo(self):
+        self.endpoint[self.cargo_on_board[0]] += self.cargo_on_board
+        print(self.endpoint[self.cargo_on_board[0]])
+        self.cargo_on_board = deque()
+        print(f"Освободилась от груза, теперь он появился в конечной точке {self.endpoint.__class__}")
+        print(f"Сколько прошло времени, должно быть ровно 1/2 времени на маршрут: {self.time_in_rout}")
+
+
 
 class Truck(Transport):
-    def __init__(self, rout_map, time, garage):
-        super().__init__(rout_map, time, garage)
+    def __init__(self, rout_map, garage, endpoint):
+        super().__init__(rout_map, garage, endpoint)
+
 
 class Ship(Transport):
-    def __init__(self, rout_map, time, garage):
-        super().__init__(rout_map, time, garage)
+    def __init__(self, rout_map, garage, endpoint):
+        super().__init__(rout_map, garage, endpoint)
 
 class DispetcherTimeTrasport:
 
     # def __init__(self, transport1, transport2, sip):
     #     self.transport = (transport1, transport2, sip)
-    def __init__(self, transport1):
+    def __init__(self, transport1, ):
         self.transport = (transport1,)
         self.status = True
-        self.output = []
+        # self.output = []
 
     def checking_transport_time(self):
         for rout_situation in self.transport:
-            print("transport time: ", rout_situation.time)
 
             # if rout_situation.time == 0 and not self.output:  # It's redy to start
-            if rout_situation.time == 0:  # It's redy to start
+            if rout_situation.time_to_endpoint == 0:  # It's redy to start
                 print("Redy to start, оповещаем о готовности к отправке")
-                self.output.append(rout_situation)
-                self.status = True
-            elif rout_situation.time == rout_situation.half_path:
-                print("Half path")
-            else:
-                print("Does not redy to start, Меняем время в машине")
+                self.status = True  # Готов к новым путешествиям - Да!
+
+            elif rout_situation.time_to_endpoint == rout_situation.time_in_rout and rout_situation.cargo_on_board:
+                rout_situation.put_cargo()
+                print("Груз доставлен")
                 self.status = False
+
+            elif rout_situation.time_in_rout == 0:
+                print("Обнулим время time to endpoint")
+                rout_situation.time_to_endpoint = 0
+                self.status = True  # Готов к новым путешествиям - Да!
+
+            else:
+                print("Я еще не вернулся обратно, меняем время в машине")
+                rout_situation.time_in_rout = rout_situation.time_in_rout - 1
+                self.status = False
+
+            print("Checking time")
+            print("time to endpoint: ", rout_situation.time_to_endpoint)
+            print("До того, как вернуться обратно осталось: ", rout_situation.time_in_rout)
+
 
 class DispetcherBuild:
 
     # def __init__(self, factory, port):
     #     self.build = (factory, port)
     def __init__(self, factory):
-        self.build = (factory,)
+        self.builds = (factory,)
         self.status = None
-        self.output = []
+        # self.output = []
 
     def checking_cargo_in_build(self):
-        for each_build in self.build:
-            print(each_build.storage)
+        for each_build in self.builds:
+            print("Ситуация в хранилище garage", each_build.storage)
             # if each_build.storage and not self.output:  # It's redy to pop
+
             if each_build.storage:  # It's redy to pop
                 self.status = True
                 print("redy to pop")
-                # return True
+                return True
+
             else:
                 print("Empty storage")
                 self.status = False
                 # return False  # Empty storage
 
-class DispetcherMove:
-    def __init__(self, disptime, dispbuild, transport):
-        self.dtime = disptime
-        self.dbuild = dispbuild
-        self.transport = transport
+class DispetcherMove:  # Класс, для учета времени доставки
 
-    def start_move(self):
-        print("DispMove", transport.garage)
-        # self.transport.set_cargo("A")
+    def __init__(self, endpoints):
+        self.endpoint = endpoints
+        self.len_element = {}
+
+    def counter(self):
+        for endpoint_element in self.endpoint:
+            self.len_element[endpoint_element] = len(endpoint_element.storage)
+        print("garage counter", self.len_element)
 
     def finish_move(self):
         print("Я доехала до пункта назначения")
 
-builds = {"A": "Factory", "B": "Factory"}
-
 #  У каждого транспорта, своя дорожная карта
-rout_map_truck = {"A": 1, "B": 5}
-rout_map_ship = {"A": 4}
-
 time = 0
 
 
 factory = Factory()
-factory.storage += "AB"
+factory.storage += "AA"
+print(factory)
 
 port = Port()
-port.storage += "DC"
+port.storage += ""
 
-car1 = Truck(rout_map_truck, time=0, garage=factory)
-car2 = Truck(rout_map_truck, time=1, garage=factory)
-ship = Ship(rout_map_ship, time=1, garage=port)
+WB = Warehouse()
+WA = Warehouse()
+
+endpoint_Truck = {"A": port, "B": WB}
+rout_map_truck = {"A": 1, "B": 1}
+
+endpoint_Ship = {"A": WA}
+rout_map_ship = {"A": 4}
+
+garage = [factory]
+endpoints = [port]
+
+car1 = Truck(rout_map_truck, garage=factory, endpoint=endpoint_Truck)
+car2 = Truck(rout_map_truck, garage=factory, endpoint=endpoint_Truck)
+# ship = Ship(rout_map_ship, time=1, garage=port, endpoint=endpoint_Ship)
 
 # dispetcherTime = DispetcherTimeTrasport(car1)
 # dispetcherBuild = DispetcherBuild(factory)
 
+print("[Start While]")
+print("\n")
+count = 1
+while count < 40:
 
-while time < 2:
-    for transport in [car1, car2, ship]:
+    # for transport in [car1, car2, ship]:
+    for transport in [car1, car2]:
+        print("count iterations: ", count)
+        print("=====================================")
         dispetcherTime = DispetcherTimeTrasport(transport)
         dispetcherBuild = DispetcherBuild(factory)
 
         dispetcherTime.checking_transport_time()
         dispetcherBuild.checking_cargo_in_build()
-        dispetcherMove = DispetcherMove(dispetcherTime, dispetcherBuild, transport)
+
+        dispetcherMove = DispetcherMove(endpoints)
+        dispetcherMove.counter()
+
+        print("len AA", len("AA"))
+        print(sum(dispetcherMove.len_element.values()))
+        print(sum(dispetcherMove.len_element.values()) == len("AA"))
 
         if dispetcherBuild.status and dispetcherTime.status:
-            dispetcherMove.start_move()
+            transport.move_on_route()
 
-    time += 1
-
-
-
+            print("// Груз, который сейчас на фабрике", factory)
+            print("=====================================")
 
 
+    if sum(dispetcherMove.len_element.values()) == len("AA"):
+        print("Закончили на итерации", count)
+        print(sum(dispetcherMove.len_element.values()) == len("AA"))
+        break
 
-class Timer:
+    count += 1
 
-    def __init__(self, time1, time2, time3):
-        self.Truck_1 = time1
-        self.Truck_2 = time1
-        self.Ship = time3
+print("3 Груз, который сейчас на фабрике", factory)
+print("4 Груз, который пришел в порт", port)
+print("[Finish while]")
 
-
-class Truck(Transport):
-    def route(self, element):
-        if element == "A":
-            print("A")
-        else:
-            print("B")
-
-
-class Ship(Transport):
-    pass
 
 
 
