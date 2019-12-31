@@ -16,11 +16,13 @@ def main(session, HEADERS, limit_articles=100, initial_page=0):
     tags_list = []
     count_articles = 0
     current_page = initial_page
-
+    list_for_len_articles = []
     while count_articles < limit_articles:
-        resp = session.get(f"https://pikabu.ru/new/subs?of=v2&subs=1&_=1577034698730&page={initial_page}",
+        resp = session.get(f"https://pikabu.ru/new/subs?of=v2&subs=1&_=1577034698730&page={current_page}",
                            headers=HEADERS)
+        print("initial page", initial_page)
         current_page += 1
+        print("current page", current_page)
 
         if resp.status_code == 200:
             soup = bs(resp.content, "html.parser")
@@ -31,6 +33,7 @@ def main(session, HEADERS, limit_articles=100, initial_page=0):
 
             for i, article in enumerate(artic_curr_page):
                 count_articles += 1
+                print("count_articles", count_articles)
                 if count_articles == limit_articles:
                     break
                 new_tags = [k.get("data-tag") for k in article.find_all("a", {"class": "tags__tag", "data-tag": True})]
