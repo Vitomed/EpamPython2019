@@ -15,6 +15,7 @@ class BaseCoffee(Component):
 
 
 class AbstractCoffeeDecorator(BaseCoffee):
+
     def __init__(self, decorated_coffee):
         self.decorated_coffee = decorated_coffee
 
@@ -24,26 +25,26 @@ class AbstractCoffeeDecorator(BaseCoffee):
 
 class Whip(AbstractCoffeeDecorator):
     def __init__(self, decorated_coffee):
-        super(Whip, self).__init__(decorated_coffee)
+        super().__init__(decorated_coffee)
 
     def get_cost(self):
-        return self.decorated_coffee.get_cost() + 5
+        return self.decorated_coffee.get_cost() + 30
 
 
 class Marshmallow(AbstractCoffeeDecorator):
     def __init__(self, decorated_coffee):
-        super(Marshmallow, self).__init__(decorated_coffee)
+        super().__init__(decorated_coffee)
 
     def get_cost(self):
-        return self.decorated_coffee.get_cost() + 10
+        return self.decorated_coffee.get_cost() + 25
 
 
 class Syrup(AbstractCoffeeDecorator):
     def __init__(self, decorated_coffee):
-        super(Syrup, self).__init__(decorated_coffee)
+        super().__init__(decorated_coffee)
 
     def get_cost(self):
-        return self.decorated_coffee.get_cost() + 15
+        return self.decorated_coffee.get_cost() + 12
 
 
 if __name__ == "__main__":
