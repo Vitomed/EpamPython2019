@@ -71,13 +71,13 @@ class DocumentsHandler:
 
         for document in documents:
             result = self._service.store_document(document)
+            print("result", result)
             if result['status'] == 'success':
                 stored_documents.append(result['document_id'])
             if result['status'] == 'error':
                 print("Couldn't upload document {}: {}".format(document, result['msg']))
 
         self._document_ids.extend(stored_documents)
-
         return stored_documents
 
     def get_documents(self, document_ids):
@@ -100,11 +100,38 @@ class DocumentsHandler:
         return loaded_documents
 
 
+class Adapter_XML_to_JSON:
+
+    def __init__(self, document_handler):
+        self.dh = document_handler
+
+    def upload_documents(self, xml_files_to_upload):
+        """
+        Changes document extension from xml to json
+        :param xml_files_to_upload: list of files in xml format
+        :return: list of files with random UUID for json format
+        """
+        stored_document = []
+        for file in xml_files_to_upload:
+            stored_document.append(file.replace(".xml", ".json"))
+
+        return self.dh.upload_documents(stored_document)
+
+    def get_documents(self, document_id):
+        """
+        Returns a list of downloaded files
+
+        :param document_id: list of files with UUID
+        :return: list of downloaded files
+        """
+        return self.dh.get_documents(document_id)
+
+
 def client_code(documents_handler):
     xml_files_to_upload = os.listdir(os.path.dirname(__file__) + '/documents')
 
     document_ids = documents_handler.upload_documents(xml_files_to_upload)
-    print(document_ids)
+    print("id", document_ids)
     print(documents_handler.get_documents(document_ids[1]))
 
 
@@ -115,5 +142,5 @@ if __name__ == "__main__":
     app = App()
     app.documents_handler = DocumentsHandler(StoreService())
     # Реализуйте класс Adapter и раскомментируйте строку ниже
-    # app.documents_handler = Adapter(app.documents_handler)
+    app.documents_handler = Adapter_XML_to_JSON(app.documents_handler)
     client_code(app.documents_handler)
