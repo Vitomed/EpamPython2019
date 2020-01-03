@@ -33,7 +33,7 @@ dogs_life.subscribe(john)
 dogs_life.subscribe(erica)
 
 dogs_nutrition_videos = ['What do dogs eat?', 'Which Pedigree pack to choose?']
-dogs_nutrition_playlist = {'Dogs nutrition': dogs_nutrition_videos]
+dogs_nutrition_playlist = {'Dogs nutrition': dogs_nutrition_videos}
 
 for video in dogs_nutrition_videos:
     dogs_life.publish_video(video)
@@ -49,3 +49,94 @@ Dear John, there is new playlist on 'All about dogs' channel: 'Dogs nutrition'
 Dear Erica, there is new playlist on 'All about dogs' channel: 'Dogs nutrition'
 
 """
+
+from abc import ABC, abstractmethod
+
+
+class Observerable(ABC):
+
+    @abstractmethod
+    def subscribe(self, user):
+        pass
+
+
+class Observer(ABC):
+
+    @abstractmethod
+    def update(self, message: str) -> None:
+        pass
+
+
+class MyTubeChannel(Observerable):
+
+    def __init__(self, name, owner):
+        """
+        :param name: name of channel
+        :param owner: channel owner
+        :param playlists: channel playlists
+        """
+        self.channel_name = name
+        self.channel_owner = owner
+        self.playlists = {}
+        self.observers = list()
+
+    def subscribe(self, user) -> None:
+        """Subscribing user user to the channel
+
+        :param user: user is Observer
+        """
+        self.observers.append(user)
+
+    def publish_video(self, video) -> None:
+        """Publish a new video and send news about
+        the publication to all subscribers
+
+        :param video:
+        """
+        for observer in self.observers:
+            message = f"there is new video on '{self.channel_name}' channel: {video}"
+            observer.update(message)
+
+    def publish_playlist(self, playlist) -> None:
+        """Publication of a new playlist and distribution
+        of news about publication to all subscribers
+
+        :param name:
+        :param playlist:
+        """
+        self.playlists[self.channel_name] = playlist
+        for observer in self.observers:
+            for name_playlist, v in playlist.items():
+                message = f"there is new playlist on '{self.channel_name}' channel: '{name_playlist}'"
+                observer.update(message)
+
+
+class MyTubeUser(Observer):
+
+    def __init__(self, name):
+        self._name = name
+
+    def update(self, message) -> None:
+        """Receive publication notifications
+
+        :param message: message from MyTubeChannel
+        """
+        print(f"Dear {self._name}, {message}")
+
+
+if __name__ == "__main__":
+    matt = MyTubeUser('Matt')
+    john = MyTubeUser('John')
+    erica = MyTubeUser('Erica')
+
+    dogs_life = MyTubeChannel('All about dogs', matt)
+    dogs_life.subscribe(john)
+    dogs_life.subscribe(erica)
+
+    dogs_nutrition_videos = ['What do dogs eat?', 'Which Pedigree pack to choose?']
+    dogs_nutrition_playlist = {'Dogs nutrition': dogs_nutrition_videos}
+
+    for video in dogs_nutrition_videos:
+        dogs_life.publish_video(video)
+
+    dogs_life.publish_playlist(dogs_nutrition_playlist)
