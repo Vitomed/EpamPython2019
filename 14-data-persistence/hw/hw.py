@@ -1,12 +1,14 @@
 import json
 import pickle
 import redis
+from pprint import pprint
 
 
 class JsonSerializer:
 
     @staticmethod
     def serialize(data):
+
         try:
             serialize_data = json.dumps(data)
         except TypeError:
