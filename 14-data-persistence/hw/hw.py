@@ -88,13 +88,13 @@ class FileHandler:
 
 
 protocols = {"json": JsonSerializer, "pickle": PickleSerializer}
-storage_type = {"redis": RedisHandler, "file": FileHandler}
+storages = {"redis": RedisHandler, "file": FileHandler}
 
 def worker_saver(data, name_serialize, storage_name):
     key = [key for key in data.keys()][0]
 
     protocol = protocols[name_serialize]
-    storage = storage_type[storage_name]
+    storage = storages[storage_name]
 
     inst_protocol = protocol()
     ser_obj = inst_protocol.serialize(data)
@@ -107,7 +107,7 @@ def worker_reciver(data, name_serialize, storage_name):
     key = [key for key in data.keys()][0]
 
     protocol = protocols[name_serialize]
-    storage = storage_type[storage_name]
+    storage = storages[storage_name]
 
     inst_protocol = protocol()
     inst_storage = storage(name_serialize)
