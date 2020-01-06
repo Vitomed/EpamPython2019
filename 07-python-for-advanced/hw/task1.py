@@ -1,5 +1,4 @@
 """
-
 Реализовать такой метакласс, что экземпляры класса созданного с помощью него
 будут удовлетворять следующим требованиям:
 
@@ -26,51 +25,64 @@
 
 """
 
+import weakref
+import inspect
 
-class Singleton(type):
-    _instances = {}
+
+class SingletonCahceMeta(type):
+
+    def __init__(cls, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        cls.__cache = weakref.WeakValueDictionary()
+        cls.pool = weakref.WeakSet()
 
     def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
 
-
-class SingletonClass(metaclass=Singleton):
-    pass
-
-
-x = SingletonClass()
-y = SingletonClass()
-print(x == y)
-
-class Cached(type):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.__cache = {}
-
-    def __call__(self, *args, **kwargs):
-        if args in self.__cache:
-            return self.__cache[args]
+        key_signature = str(inspect.signature(
+            cls.__init__).bind_partial(cls, *args, **kwargs))
+        if key_signature in cls.__cache:
+            return cls.__cache[key_signature]
         else:
             obj = super().__call__(*args, **kwargs)
-            self.__cache[args] = obj
+            cls.connect = connect
+            cls.pool.add(obj)
+
+            cls.__cache[key_signature] = obj
             return obj
 
 
-class A(metaclass=Cached):
-    def __init__(self, *args, **kwargs):
-        self.a = args
-        self.b = kwargs
+def connect(cls, *args, **kwargs):
+
+    key_signature = str(inspect.signature(
+        cls.__init__).bind_partial(cls, *args, **kwargs))
+
+    try:
+        return cls.__cache[key_signature]
+    except AttributeError:
+        raise AttributeError("Object with this attribute set is missing")
 
 
-a = A(1,2)
-b = A(1,2)
-c = A(2,2)
+class Spam(metaclass=SingletonCahceMeta):
+    def __init__(self, a, b, c):
+        self.a = a
+        self.b = b
+        self.c = c
 
 
-unit1 = A('1', '2', a=1)
-unit2 = A('1', '2', a=1)
-print(unit1 is unit2)
+# a = Spam(1, 2, q=12)
+b = Spam(1, 2, 4)
+# del b
+d = Spam(4, 5, 6)
+a = Spam(4, 5, 6)
 
+# print(a is b)
+# print(a is d)
+# print(a._SingletonCahceMeta__cache)
+# b.connect(4, 5, 6).b = 7
+# print(d.b == 7)
+
+pool = b.pool
+print(pool)
+print(len(pool))
+del b
+print(len(pool))
