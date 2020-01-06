@@ -35,6 +35,7 @@ class SingletonCahceMeta(type):
         super().__init__(*args, **kwargs)
         cls.__cache = weakref.WeakValueDictionary()
         cls.pool = weakref.WeakSet()
+        print("cache", cls.__cache)
 
     def __call__(cls, *args, **kwargs):
 
@@ -44,45 +45,54 @@ class SingletonCahceMeta(type):
             return cls.__cache[key_signature]
         else:
             obj = super().__call__(*args, **kwargs)
-            cls.connect = connect
+            # cls.connect = cls.connect
+            setattr(cls, "connect", cls.connect)
             cls.pool.add(obj)
-
             cls.__cache[key_signature] = obj
             return obj
 
+    def connect(cls, *args, **kwargs):
 
-def connect(cls, *args, **kwargs):
+        key_signature = str(inspect.signature(
+            cls.__init__).bind_partial(cls, *args, **kwargs))
+        print(key_signature)
 
-    key_signature = str(inspect.signature(
-        cls.__init__).bind_partial(cls, *args, **kwargs))
+        try:
+            return cls.__cache[key_signature]
+        except AttributeError:
+            raise AttributeError("Object with this attribute set is missing")
 
-    try:
-        return cls.__cache[key_signature]
-    except AttributeError:
-        raise AttributeError("Object with this attribute set is missing")
 
+# class Spam(metaclass=SingletonCahceMeta):
+#     def __init__(self, a, b, c, **kwargs):
+#         self.__dict__ = dict(kwargs)
+#         self.a = a
+#         self.b = b
+#         self.c = c
 
 class Spam(metaclass=SingletonCahceMeta):
-    def __init__(self, a, b, c):
-        self.a = a
-        self.b = b
-        self.c = c
+    def __init__(self, **kwargs):
+        self.__dict__ = dict(kwargs)
 
 
 # a = Spam(1, 2, q=12)
-b = Spam(1, 2, 4)
-# del b
-d = Spam(4, 5, 6)
-a = Spam(4, 5, 6)
-
+# b = Spam(1, 2, 4)
+# d = Spam(4, 5, 6, w=14)
+# a = Spam(4, 5, 6)
+d = Spam(w=14)
+b = Spam(a=1)
 # print(a is b)
 # print(a is d)
-# print(a._SingletonCahceMeta__cache)
-# b.connect(4, 5, 6).b = 7
-# print(d.b == 7)
 
-pool = b.pool
-print(pool)
-print(len(pool))
-del b
-print(len(pool))
+print("dict", d.__dict__)
+print("w", d.w)
+print("connect 1 ", b.connect(w=14).__dict__)
+print("connect 2", b.connect(w=14).w)
+b.connect(w=14).w = 0
+print("d", d.w == 0)
+
+# pool = b.pool
+# print(pool)
+# print(len(pool))
+# del b
+# print(len(pool))
