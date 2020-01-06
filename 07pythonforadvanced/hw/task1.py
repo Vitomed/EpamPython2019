@@ -34,20 +34,9 @@ class SingletonCahceMeta(type):
     def __init__(cls, *args, **kwargs):
         super().__init__(*args, **kwargs)
         cls.__cache = weakref.WeakValueDictionary()
-        # cls.pool = weakref.WeakSet()
+        cls.pool = weakref.WeakSet()
 
     def __call__(cls, *args, **kwargs):
-
-        def delete_obj(obj):
-            try:
-                for k,v in cls.__cache.items():
-                    if obj is v:
-                        del v
-            except KeyError:
-                raise KeyError(f"can`not delete obj {obj}")
-
-        cls.__del__  = delete_obj
-        cls.pool = cls.__cache
 
         key_signature = str(inspect.signature(
             cls.__init__).bind_partial(cls, *args, **kwargs))
@@ -56,9 +45,7 @@ class SingletonCahceMeta(type):
         else:
             obj = super().__call__(*args, **kwargs)
             setattr(cls, "connect", cls.connect)
-            # print("cls kwg", kwargs)
-            # cls.pool = SingletonCahceMeta.pool
-            # cls.pool.add(obj)
+            cls.pool.add(obj)
             cls.__cache[key_signature] = obj
             return obj
 
@@ -66,7 +53,6 @@ class SingletonCahceMeta(type):
 
         key_signature = str(inspect.signature(
             cls.__init__).bind_partial(cls, *args, **kwargs))
-        print(key_signature)
 
         try:
             return cls.__cache[key_signature]
@@ -81,11 +67,4 @@ class SiamObj(metaclass=SingletonCahceMeta):
 
 
 if __name__ == "__main__":
-    # Please, test pool there
-
-    u1 = SiamObj(1, 2, 4, a=5)
-    # u2 = SiamObj(2, 2, 4, a=5)
-    pool = u1.pool
-    print(len(pool))
-    del u1
-    print(len(pool))
+    pass

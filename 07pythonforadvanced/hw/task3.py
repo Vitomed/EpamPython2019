@@ -29,9 +29,11 @@ class SiamMetaTest(unittest.TestCase):
         self.assertEqual(self.unit3.z, 100)
 
     def test_pool_method(self):
-        self.unit3 = SiamObj(a=1)
+        self.unit2 = SiamObj(a=2)
+        self.unit3 = SiamObj(a=3)
         pool = self.unit3.pool
-        print(len(pool))
+        del self.unit3
+        self.assertEqual(len(pool), 1)
 
 
 if __name__ == "__main__":
