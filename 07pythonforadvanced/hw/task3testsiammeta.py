@@ -34,7 +34,3 @@ class SiamMetaTest(unittest.TestCase):
         pool = self.unit3.pool
         del self.unit3
         self.assertEqual(len(pool), 1)
-
-
-if __name__ == "__main__":
-    unittest.main()
