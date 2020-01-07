@@ -127,7 +127,6 @@ class DispetcherTimeTrasport:
         # self.transport = transport
         self.status = True
 
-    # def checking_transport_time(self, transport):
     def checking_transport_time(self, transport):
 
         """
@@ -263,9 +262,6 @@ rout_map_ship = {"A": 4}
 
 garage = [factory, port]
 endpoints = [port, WA, WB]
-
-# garage = [factory]
-# endpoints = [port]
 
 truck_1 = Truck(transport_name="Truck_1", rout_map=rout_map_Truck, garage=factory, endpoint=endpoint_Truck)
 truck_2 = Truck(transport_name="Truck_2", rout_map=rout_map_Truck, garage=factory, endpoint=endpoint_Truck)
