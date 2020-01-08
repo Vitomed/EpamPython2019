@@ -1,0 +1,58 @@
+21468 function calls (20194 primitive calls) in 1.581 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    1.581    1.581 <string>:1(<module>)
+        1    0.000    0.000    0.000    0.000 __init__.py:1164(__init__)
+        1    0.000    0.000    0.000    0.000 __init__.py:1216(getLogger)
+        1    0.000    0.000    0.000    0.000 __init__.py:1267(_fixupParents)
+        1    0.000    0.000    0.000    0.000 __init__.py:1336(__init__)
+        1    0.000    0.000    0.000    0.000 __init__.py:1600(getEffectiveLevel)
+        1    0.000    0.000    0.000    0.000 __init__.py:187(_checkLevel)
+        1    0.000    0.000    0.000    0.000 __init__.py:1925(getLogger)
+        1    0.000    0.000    0.000    0.000 __init__.py:212(_acquireLock)
+        1    0.000    0.000    0.000    0.000 __init__.py:221(_releaseLock)
+        1    0.000    0.000    0.000    0.000 __init__.py:24(detect)
+        1    0.000    0.000    0.000    0.000 __init__.py:716(__init__)
+        1    0.000    0.000    0.000    0.000 genericpath.py:16(exists)
+ 1460/186    0.027    0.000    0.077    0.000 os.py:278(walk)
+      181    0.008    0.000    0.013    0.000 posixpath.py:168(islink)
+        1    0.000    0.000    0.000    0.000 posixpath.py:338(normpath)
+        1    0.000    0.000    0.000    0.000 posixpath.py:376(abspath)
+     1410    0.008    0.000    0.013    0.000 posixpath.py:41(_get_sep)
+        1    0.000    0.000    0.000    0.000 posixpath.py:64(isabs)
+     1409    0.034    0.000    0.059    0.000 posixpath.py:75(join)
+        1    0.028    0.028    1.581    1.581 profiler.py:13(walker_path)
+        1    0.000    0.000    1.581    1.581 profiler.py:28(main)
+     1228    0.034    0.000    1.430    0.001 profiler.py:7(get_hash_file)
+        1    0.000    0.000    0.000    0.000 universaldetector.py:111(feed)
+        1    0.000    0.000    0.000    0.000 universaldetector.py:220(close)
+        1    0.000    0.000    0.000    0.000 universaldetector.py:81(__init__)
+        1    0.000    0.000    0.000    0.000 universaldetector.py:94(reset)
+     1228    1.127    0.001    1.127    0.001 {built-in method _hashlib.openssl_sha256}
+      181    0.001    0.000    0.001    0.000 {built-in method _stat.S_ISLNK}
+        1    0.000    0.000    1.581    1.581 {built-in method builtins.exec}
+     1416    0.005    0.000    0.005    0.000 {built-in method builtins.isinstance}
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+     1602    0.013    0.000    0.013    0.000 {built-in method builtins.next}
+        2    0.000    0.000    0.000    0.000 {built-in method builtins.print}
+     1229    0.044    0.000    0.044    0.000 {built-in method io.open}
+     1594    0.005    0.000    0.005    0.000 {built-in method posix.fspath}
+      181    0.004    0.000    0.004    0.000 {built-in method posix.lstat}
+      182    0.003    0.000    0.003    0.000 {built-in method posix.scandir}
+        1    0.000    0.000    0.000    0.000 {built-in method posix.stat}
+        1    0.000    0.000    0.000    0.000 {method 'acquire' of '_thread.RLock' objects}
+     1428    0.004    0.000    0.004    0.000 {method 'append' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+     1409    0.004    0.000    0.004    0.000 {method 'endswith' of 'str' objects}
+     1228    0.008    0.000    0.008    0.000 {method 'hexdigest' of '_hashlib.HASH' objects}
+     1420    0.004    0.000    0.004    0.000 {method 'is_dir' of 'posix.DirEntry' objects}
+        1    0.000    0.000    0.000    0.000 {method 'join' of 'str' objects}
+     1229    0.217    0.000    0.217    0.000 {method 'read' of '_io.BufferedReader' objects}
+        1    0.000    0.000    0.000    0.000 {method 'release' of '_thread.RLock' objects}
+        2    0.000    0.000    0.000    0.000 {method 'rfind' of 'str' objects}
+        2    0.000    0.000    0.000    0.000 {method 'search' of 're.Pattern' objects}
+        1    0.000    0.000    0.000    0.000 {method 'split' of 'str' objects}
+        5    0.000    0.000    0.000    0.000 {method 'startswith' of 'bytearray' objects}
+     1412    0.005    0.000    0.005    0.000 {method 'startswith' of 'str' objects}
