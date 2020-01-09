@@ -1,0 +1,59 @@
+{"statistics": {
+		"wine": {
+			"Gew\u00fcrztraminer": {
+				"avarege_price": "26.223", 
+				"min_price": "6", 
+				"max_price": "197", 
+				"most_common_region": "('Alsace', 482)", 
+				"most_common_country": "('France', 482)", 
+				"avarage_score": "88.59"
+				},
+			"Riesling": {
+				"avarege_price": "31.95", 
+				"min_price": "5", 
+				"max_price": "775", 
+				"most_common_region": "('Finger Lakes', 1254)", 
+				"most_common_country": "('Germany', 1815)", 
+				"avarage_score": "89.45"
+				},
+			"Merlot": {
+				"avarege_price": "29.539", 
+				"min_price": "4", 
+				"max_price": "625", 
+				"most_common_region": "('Columbia Valley', 643)", 
+				"most_common_country": "('US', 2342)", 
+				"avarage_score": "87.21"
+				},
+			"Madera": {
+				"avarege_price": "0", 
+				"min_price": "0", 
+				"max_price": "0", 
+				"most_common_region": "0", 
+				"most_common_country": "0", 
+				"avarage_score": "0"
+				},
+			"Tempranillo": {
+				"avarege_price": "31.089", 
+				"min_price": "4", 
+				"max_price": "600", 
+				"most_common_region": "('Rioja', 635)", 
+				"most_common_country": "('Spain', 1445)", 
+				"avarage_score": "87.5"
+				},
+			"Red Blend": {
+				"avarege_price": "35.877", 
+				"min_price": "5", 
+				"max_price": "500", 
+				"most_common_region": "('Columbia Valley', 807)", 
+				"most_common_country": "('Italy', 3671)", 
+				"avarage_score": "88.38"
+				},
+		},
+		"most_expensive_wine": "('Bordeaux-style Red Blend', 3300)",
+		"cheapest_wine": "('Chardonnay', 4)",
+		"highest_score": "100",
+		"lowest_score": "80",
+		"most_rated_country": "('Germany', '93')",
+		"most_active_commentator": "('Roger Voss', 25787)",
+		}
+}

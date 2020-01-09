@@ -277,19 +277,6 @@ if __name__ == '__main__':
         for varieties in varieties_of_wines:
 
             print(f"\nStatistic for Varieties: {varieties}", end="\n"*2)
-            # calculate_avarage_price(varieties, wine_data)
-            # calculate_min_price(varieties, wine_data)
-            # calculate_max_price(varieties, wine_data)
-            # calculate_most_common_region(varieties, wine_data)
-            # calculate_most_common_country(varieties, wine_data)
-            # calculate_avarage_score(varieties, wine_data)
-            # calculate_most_expensive_wine(wine_data)
-            # calculate_cheapest_wine(wine_data)
-            # calculate_highest_score(wine_data)
-            # calculate_lowest_score(wine_data)
-            # calculate_most_rated_country(wine_data)
-            # calculate_most_active_commentator(wine_data)
-            # print("\n")
 
             print(f'\t\t\t"{varieties}"' + ': {', file=f)
 
