@@ -16,29 +16,30 @@ def main(session, HEADERS, limit_articles=100, initial_page=0):
     tags_list = []
     count_articles = 0
     current_page = initial_page
-    list_for_len_articles = []
+    # list_for_len_articles = []
     while count_articles < limit_articles:
         resp = session.get(f"https://pikabu.ru/new/subs?of=v2&subs=1&_=1577034698730&page={current_page}",
                            headers=HEADERS)
-        print("initial page", initial_page)
-        current_page += 1
         print("current page", current_page)
+        current_page += 1
 
         if resp.status_code == 200:
             soup = bs(resp.content, "html.parser")
             artic_curr_page = soup.find_all("article", {"class": "story"})
             if not len(artic_curr_page):
+                print(f"Exist articles on page {current_page - 1}")
                 continue
             artic_curr_page.pop()  # последний элемент в списке - это рекламная информация на странице, выкидываем его
 
             for i, article in enumerate(artic_curr_page):
                 count_articles += 1
-                print("count_articles", count_articles)
                 if count_articles == limit_articles:
                     break
                 new_tags = [k.get("data-tag") for k in article.find_all("a", {"class": "tags__tag", "data-tag": True})]
                 tags_list.append(new_tags)
                 head_article[article.a.text] = new_tags
+
+            print("count_articles", count_articles)
         else:
             print("Неудача, смотри код ошибки", resp.status_code)
             break
