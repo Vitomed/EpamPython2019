@@ -1,4 +1,4 @@
-# -*- coding: utf-8book -*-
+
 import collections
 from collections import Counter
 from timeit import default_timer as timer
@@ -40,10 +40,11 @@ with open('text1.txt', 'r') as text1, open('text2.txt', 'r') as text2:
     text1 = text1.read()
     text2 = text2.read()
 
+print("="*20)
 assert esy_tim_sort('Aab B', 'Bb aA'), 'Strings are not permutations'
 assert esy_tim_sort('a b', ' ba'), 'Strings are not permutations'
 assert esy_tim_sort(text1, text2), 'Strings are not permutations'
-
+print("="*20)
 
 @time_function
 def collection_dict(str1: str, str2: str) -> bool:
@@ -61,11 +62,11 @@ def collection_dict(str1: str, str2: str) -> bool:
     assert not any(dict_counter.values()), f"Look at this {dict_counter}!"
     return True
 
-
+print("="*20)
 assert collection_dict('Aab B', 'B abA'), 'Strings are not permutations'
 assert collection_dict('a b', ' ba'), 'Strings are not permutations'
 assert collection_dict(text1, text2), 'Strings are not permutations'
-
+print("="*20)
 
 @time_function
 def set_conversion(str1: str, str2: str) -> bool:
@@ -79,11 +80,11 @@ def set_conversion(str1: str, str2: str) -> bool:
     if set(str1) == set(str2):
         return True
 
-
+print("="*20)
 assert set_conversion('Aab B', 'Bb aA'), 'Strings are not permutations'
 assert set_conversion('a b', ' ba'), 'Strings are not permutations'
 assert set_conversion(text1, text2), 'Strings are not permutations'
-
+print("="*20)
 
 @time_function
 def structure_dict(str1: str, str2: str) -> bool:
@@ -105,11 +106,11 @@ def structure_dict(str1: str, str2: str) -> bool:
     assert not any(dict_chars.values()), "Please, attention this %s" % dict_chars
     return True
 
-
+print("="*20)
 assert structure_dict('Aab B', 'Bb aA'), 'Strings are not permutations'
 assert structure_dict('a b', ' ba'), 'Strings are not permutations'
 assert structure_dict(text1, text2), 'Strings are not permutations'
-
+print("="*20)
 
 @time_function
 def count_elements(str1: str, str2: str) -> bool:
@@ -123,7 +124,7 @@ def count_elements(str1: str, str2: str) -> bool:
     assert len(str1) == len(str2), f'Different string lengths (length str1: {len(str1)}, length str2: {len(str2)})'
     return all(str1.count(i) == str2.count(i) for i in str1)
 
-
+print("="*20)
 assert count_elements('Aab B', 'Bb aA'), 'Strings are not permutations'
 assert count_elements('a b', ' ba'), 'Strings are not permutations'
 assert count_elements(text1, text2), 'Strings are not permutations'
@@ -136,9 +137,9 @@ def collections_counter(str1, str2):
                                    f' items str2: {two_count.items()})'
     return True
 
-
+print("="*20)
 assert collections_counter('Aab B', 'Bb aA'), 'Strings are not permutations'
 assert collections_counter('a b', ' ba'), 'Strings are not permutations'
 assert collections_counter(text1, text2), 'Strings are not permutations'
-
+print("="*20)
 
