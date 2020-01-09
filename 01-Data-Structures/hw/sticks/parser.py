@@ -9,7 +9,7 @@ def join_jsons(json_f_1, json_f_2):
 
     :param file1: 'winedata_1.json'
     :param file2: 'winedata_2.json'
-    :return: None
+    :return: concatinated text from two files
     """
     with open(json_f_1, 'r', encoding='utf-8') as f1, \
             open(json_f_2, 'r', encoding='utf-8') as f2:
@@ -92,7 +92,6 @@ def calculate_avarage_price(varieties, wine_data):
 
     :param varieties: variates of wine
     :param wine_data: data of each wine
-    :return: avarage price
     """
     list_price = [int(x['price']) for x in wine_data if x['variety'] == varieties and int(x['price']) > 0]
     # if not len(list_price):
@@ -101,13 +100,12 @@ def calculate_avarage_price(varieties, wine_data):
         return 0
 
     avarage_price = round(sum(list_price)/len(list_price), 3)
-    print(f'\tAvarage price for {varieties} is: ',avarage_price)
-    # return avarage_price
+    print(f'\tAvarage price for {varieties} is: ', avarage_price)
+    return avarage_price
 
 
 def calculate_min_price(varieties, wine_data):
     """Calculation of the minimum price of wine
-    :return: minimum price
     """
     list_price = [int(x['price']) for x in wine_data if x['variety'] == varieties and int(x['price']) > 0]
     # if not len(list_price):
@@ -122,7 +120,6 @@ def calculate_min_price(varieties, wine_data):
 
 def calculate_max_price(varieties, wine_data):
     """Calculation of the maximum price of wine
-    :return: maximum price
     """
     list_price = [int(x['price']) for x in wine_data if x['variety'] == varieties and int(x['price']) > 0]
     # if not len(list_price):
@@ -130,14 +127,13 @@ def calculate_max_price(varieties, wine_data):
         print(f'\tMaximum price for {varieties} is: ',0)
         return 0
     max_price = max(list_price)
-    print(f'\tMaximum price for {varieties} is: ',max_price)
+    print(f'\tMaximum price for {varieties} is: ', max_price)
     return max_price
 
 
 def calculate_most_common_region(varieties, wine_data):
     """Calculation of the region where most
     wines of this variety are produced
-    :return: None
     """
     region_1 = [x['region_1'] for x in wine_data if x['variety'] == varieties and x['region_1'] != '0']
     region_2 = [x['region_2'] for x in wine_data if x['variety'] == varieties and x['region_2'] != '0']
@@ -153,7 +149,8 @@ def calculate_most_common_region(varieties, wine_data):
     max_val = max(region_counter.values())
     final_dict = {k: v for k, v in region_counter.items() if v == max_val}
     name = [i for i in final_dict.keys()]
-    print(f'\tMost common region for {varieties} is: ',name[0], max_val)
+    print(f'\tMost common region for {varieties} is: ', name[0], max_val)
+    return name[0], max_val
 
 
 
@@ -161,28 +158,8 @@ def calculate_most_common_region(varieties, wine_data):
 def calculate_most_common_country(varieties, wine_data):
     """Calculation of the country where most
     wines of this variety are produced
-    :return: None
     """
     countries = [x['country'] for x in wine_data if x['variety'] == varieties and x['country'] != '0']
-    most_common = {}
-    keys = list(set(countries))
-    # print(countries)
-    # print(keys)
-    for country in keys:
-        r = country
-        kye = [r]
-        v = [countries.count(country)]
-        tmp_d = dict(zip(kye, v))
-        most_common.update(tmp_d)
-
-    name = ''
-    count = 0
-    for key in most_common.keys():
-        if most_common[key] > count:
-            count = most_common[key]
-            name = key
-
-    print(f'\tMost common country for {varieties} is: ',name, count)
 
     if not countries:
         print(f'\tMost common country for {varieties} is: ',0)
@@ -195,59 +172,85 @@ def calculate_most_common_country(varieties, wine_data):
     final_dict = {k: v for k, v in countries_counter.items() if v == max_val}
     name = [i for i in final_dict.keys()]
     print(f'\tMost common country for {varieties} is: ',name[0], max_val)
-
-
+    return name[0], max_val
 
 
 def calculate_avarage_score(varieties, wine_data):
-    """
-
-    :param varieties:
-    :param wine_data:
-    :return:
+    """Calculate avarage score for points
     """
     points = [int(x['points']) for x in wine_data if x['variety'] == varieties and int(x['points']) > 0]
-    if len(points) == 0:
+    if not points:
         print(f'\tAvarage score for {varieties} is: ', 0)
         return 0
-    avg_points = round(sum(points)/len(points), 2)
-    print(f'\tAvarage score for {varieties} is: ', avg_points)
-    return avg_points
+    avarage_points = round(sum(points)/len(points), 2)
+    print(f'\tAvarage score for {varieties} is: ', avarage_points, end="\n"*2)
+    return avarage_points
 
 
 def calculate_most_expensive_wine(wine_data):
+    """Calculate most expensive wine
+    :return: tuple (name of wine, price)
     """
-
-    :param wine_data:
-    :return:
-    """
-    wine_data = sorted(wine_data, key=lambda x: int(x['price']), reverse=True)
+    wine_data = sorted(wine_data, key=lambda k: int(k['price']), reverse=True)
     print(f'\tMost expensive wine is: ', wine_data[0]['variety'], wine_data[0]['price'])
-    return (wine_data[0]['variety'], wine_data[0]['price'])
+    return wine_data[0]['variety'], wine_data[0]['price']
 
 
 def calculate_cheapest_wine(wine_data):
-    """
-
-    :param wine_data:
-    :return:
+    """Calculate most cheapest wine among
+    countries
+    :return: tuple (name of wine, price)
     """
     cheapest = [(x['variety'], int(x['price'])) for x in wine_data if int(x['price']) > 0]
-    cheapest_dict = dict(sorted(dict(cheapest).items(), key=lambda x: x[1]))
-    _price = 0
-    most_cheapest = []
-    for key in cheapest_dict.keys():
-        if cheapest_dict[key] == 0:
-            continue
-        # it will only once
-        if cheapest_dict[key] > _price and _price == 0:
-            _price = cheapest_dict[key]
+    d_cheapest = dict(cheapest)
+    for k, v in d_cheapest.items():
+        if v == 0:
+            del d_cheapest[k]
+    sort_cheapest = sorted(d_cheapest.items(), key=lambda  k: k[1])
+    print("\tMost cheapest wine is: ", sort_cheapest[0][0], sort_cheapest[0][1])
+    return sort_cheapest[0][0], sort_cheapest[0][1]
 
-        if cheapest_dict[key] <= _price:
-            _price = cheapest_dict[key]
-            most_cheapest.append((key, cheapest_dict[key]))
 
-    print('\tMost cheapest wine(s) is/are:', dict(most_cheapest))
+def calculate_highest_score(wine_data):
+    """Calculate most highest score
+    :return: str "score"
+    """
+    highest_score = max([int(data["points"]) for data in wine_data])
+    print("\tHighest score is: ", highest_score)
+    return highest_score
+
+
+def calculate_lowest_score(wine_data):
+    """Calculate most lowest score
+    :return: str "score"
+    """
+    lowest_score = min([int(i['points']) for i in wine_data])
+    print("\tLowest score is: ", lowest_score)
+    return lowest_score
+
+
+def calculate_most_rated_country(wine_data):
+    """Calculate most rated country
+    :return: tuple (name of the country, points)
+    """
+    rated = [(x['country'], (x['points'])) for x in wine_data if x['country'] != '0' and int(x['points']) > 0]
+    d_rated = dict(rated)
+    sort_rated = sorted(d_rated.items(), key=lambda k: k[1], reverse=True)
+    print("\tMost rated country is: ",sort_rated[0])
+    return sort_rated[0]
+
+
+def calculate_most_active_commentator(wine_data):
+    """Caalculate most active commentator
+    :return: tuple (Name, count)
+    """
+    commentator_name = [x["taster_name"] for x in wine_data if x["taster_name"] != '0']
+    activity_commentator = collections.defaultdict(int)
+    for i in commentator_name:
+        activity_commentator[i] += 1
+    sorted_list_commentators = sorted(activity_commentator.items(), key=lambda k: k[1], reverse=True)
+    print("\tMost active commentator", sorted_list_commentators[0])
+    return sorted_list_commentators[0]
 
 
 if __name__ == '__main__':
@@ -268,13 +271,65 @@ if __name__ == '__main__':
     wine_data_unsort = get_wine_data(keys, datas_betw_braces)
     wine_data = sort_wine_data(wine_data_unsort)
 
-    for varieties in varieties_of_wines:
-        print(f"Statistic for Varieties: {varieties}", end="\n"*2)
-        calculate_avarage_price(varieties, wine_data)
-        calculate_min_price(varieties, wine_data)
-        calculate_max_price(varieties, wine_data)
-        calculate_most_common_region(varieties, wine_data)
+    with open('mystats.json', 'w') as f:
+        print('{"statistics": {', file=f)
+        print('\t\t"wine": {', file=f)
+        for varieties in varieties_of_wines:
 
-        # calculate_most_common_country(varieties, wine_data)
-        # calculate_avarage_score(varieties, wine_data)
-        print("\n")
+            print(f"\nStatistic for Varieties: {varieties}", end="\n"*2)
+            # calculate_avarage_price(varieties, wine_data)
+            # calculate_min_price(varieties, wine_data)
+            # calculate_max_price(varieties, wine_data)
+            # calculate_most_common_region(varieties, wine_data)
+            # calculate_most_common_country(varieties, wine_data)
+            # calculate_avarage_score(varieties, wine_data)
+            # calculate_most_expensive_wine(wine_data)
+            # calculate_cheapest_wine(wine_data)
+            # calculate_highest_score(wine_data)
+            # calculate_lowest_score(wine_data)
+            # calculate_most_rated_country(wine_data)
+            # calculate_most_active_commentator(wine_data)
+            # print("\n")
+
+            print(f'\t\t\t"{varieties}"' + ': {', file=f)
+
+            print('\t\t\t\t"avarege_price":',
+                  f'"{calculate_avarage_price(varieties, wine_data)}", ', file=f)
+
+            print('\t\t\t\t"min_price":',
+                  f'"{calculate_min_price(varieties, wine_data)}", ', file=f)
+
+            print('\t\t\t\t"max_price":',
+                  f'"{calculate_max_price(varieties, wine_data)}", ', file=f)
+
+            print('\t\t\t\t"most_common_region":',
+                  f'"{calculate_most_common_region(varieties, wine_data)}", ', file=f)
+
+            print('\t\t\t\t"most_common_country":',
+                  f'"{calculate_most_common_country(varieties, wine_data)}", ', file=f)
+
+            print('\t\t\t\t"avarage_score":',
+                  f'"{calculate_avarage_score(varieties, wine_data)}"', file=f)
+            print('\t\t\t\t},', file=f)
+        print("General results:")
+        print('\t\t},', file=f)
+
+        print('\t\t"most_expensive_wine":',
+              f'"{calculate_most_expensive_wine(wine_data)}",', file=f)
+
+        print('\t\t"cheapest_wine":',
+              f'"{calculate_cheapest_wine(wine_data)}",', file=f)
+
+        print('\t\t"highest_score":',
+              f'"{calculate_highest_score(wine_data)}",', file=f)
+
+        print('\t\t"lowest_score":',
+              f'"{calculate_lowest_score(wine_data)}",', file=f)
+
+        print('\t\t"most_rated_country":',
+              f'"{calculate_most_rated_country(wine_data)}",', file=f)
+
+        print('\t\t"most_active_commentator":',
+              f'"{calculate_most_active_commentator(wine_data)}",', file=f)
+        print('\t\t}', file=f)
+        print('}', file=f)
