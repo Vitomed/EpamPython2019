@@ -14,7 +14,7 @@ def instances_counter(cls):
     setattr(cls, "counter", 0)
     obj_init = cls.__init__
 
-    def create_new_init(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         cls.counter += 1
         obj_init(self, *args, **kwargs)
 
@@ -26,7 +26,7 @@ def instances_counter(cls):
         cls.counter = 0
         return count_now
 
-    setattr(cls, "__init__", create_new_init)
+    setattr(cls, "__init__", __init__)
     setattr(cls, "get_created_instances", get_created_instances)
     setattr(cls, "reset_instances_counter", reset_instances_counter)
 
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     User.get_created_instances()  # 0
     user, _, _ = User(1), User(2), User(3)
     assert user.get_created_instances() == 3
-    assert user.get_created_instances() == 3 
+    assert user.get_created_instances() == 3
     assert user.reset_instances_counter() == 3
     assert user.get_created_instances() == 0
     print(user.a)
