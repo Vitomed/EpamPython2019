@@ -35,21 +35,21 @@ def instances_counter(cls):
 
 @instances_counter
 class User:
-    def __init__(self, b=13):
-        self._a = b
+    def __init__(self, a):
+        self._a = a
 
     @property
     def a(self):
-        return self._a + 15
+        return self._a + 10
 
 
 if __name__ == '__main__':
-    User.get_created_instances()  # 0
-    user, _, _ = User(1), User(2), User(3)
+    assert User.get_created_instances() == 0
+    user, _, _ = User(2), User(2), User(2)
     assert user.get_created_instances() == 3
     assert user.get_created_instances() == 3
     assert user.reset_instances_counter() == 3
     assert user.get_created_instances() == 0
-    print(user.a)
+    assert user.a == 12
 
 
